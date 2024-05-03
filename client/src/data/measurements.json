@@ -120,6 +120,71 @@
         ]
     },
     {
+        "id": "gdfb2",
+        "athleteId": 1,
+        "date": "2024-8-22 15:19:01",
+        "sport": "bike",
+        "indoorOutdoor": "indoor",
+        "weight": 80,
+        "typeOfShoes": null,
+        "bikeType": "trek speedConcept",
+        "poolLength": null,
+        "description": "Tady je krátký popisek k měření. Počasí, pocity...",
+        "points": [
+            {
+                "power": "200",
+                "lactate": "0.8",
+                "heartRate": "105"
+            },
+            {
+                "power": "230",
+                "lactate": "0.5",
+                "heartRate": "110"
+            },
+            {
+                "power": "260",
+                "lactate": "1.0",
+                "heartRate": "112"
+            },
+            {
+                "power": "290",
+                "lactate": "1.6",
+                "heartRate": "135"
+            },
+            {
+                "power": "320",
+                "lactate": "2.0",
+                "heartRate": "140"
+            },
+            {
+                "power": "350",
+                "lactate": "2.8",
+                "heartRate": "145"
+            },
+            {
+                "power": "380",
+                "lactate": "3.2",
+                "heartRate": "155"
+            },
+            {
+                "power": "400",
+                "lactate": "3.5",
+                "heartRate": "160"
+            },
+            {
+                "power": "430",
+                "lactate": "4.5",
+                "heartRate": "165"
+            },
+            {
+                "power": "460",
+                "lactate": "8.2",
+                "heartRate": "175"
+            }
+           
+        ]
+    },
+    {
         "id": 3,
         "athleteId": 2,
         "date": "2024-05-27 11:36:21",

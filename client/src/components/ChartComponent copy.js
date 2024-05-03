@@ -50,9 +50,11 @@ const ChartComponent = ({ testings }) => {
     });
 
     let powers = Array.from(powerSet).sort((a, b) => a - b);
+    console.log("Sorted powers (initial):", powers);
+
     if (testings.length && testings[0].sport === "run") {
-      // Reverse the order for running to show slower paces (higher values) on the right
       powers.reverse();
+      console.log("Reversed powers for running:", powers);
     }
 
     setSortedPowers(powers);
@@ -67,12 +69,8 @@ const ChartComponent = ({ testings }) => {
       return dataPoint;
     });
 
+    console.log("ChartData:", combinedData);
     setChartData(combinedData);
-    // Update the initial zoom domain based on whether the sport is 'run'
-    setZoomDomain({
-      left: testings[0]?.sport === "run" ? "dataMax" : "dataMin",
-      right: testings[0]?.sport === "run" ? "dataMin" : "dataMax",
-    });
   }, [testings]);
 
   const secondsToPace = (seconds) => {
@@ -81,38 +79,24 @@ const ChartComponent = ({ testings }) => {
     return `${minutes}:${secs.toString().padStart(2, "0")}`;
   };
   const zoom = () => {
-    if (!refAreaLeft || !refAreaRight || refAreaLeft === refAreaRight) {
+    if (refAreaLeft === refAreaRight || refAreaRight === "") {
       setRefAreaLeft("");
       setRefAreaRight("");
       return;
     }
 
-    // Find indices for refAreaLeft and refAreaRight in sortedPowers
-    const startPower = Math.min(refAreaLeft, refAreaRight);
-    const endPower = Math.max(refAreaLeft, refAreaRight);
-
+    // Set new zoom domain
     setZoomDomain({
-      left: testings[0]?.sport === "run" ? endPower : startPower,
-      right: testings[0]?.sport === "run" ? startPower : endPower,
+      left: Math.min(refAreaLeft, refAreaRight),
+      right: Math.max(refAreaLeft, refAreaRight),
     });
 
     setRefAreaLeft("");
     setRefAreaRight("");
   };
-
   const resetZoom = () => {
-    setZoomDomain({
-      left:
-        testings[0]?.sport === "run"
-          ? sortedPowers[sortedPowers.length - 1]
-          : sortedPowers[0],
-      right:
-        testings[0]?.sport === "run"
-          ? sortedPowers[0]
-          : sortedPowers[sortedPowers.length - 1],
-    });
+    setZoomDomain({ left: "dataMax", right: "dataMin" });
   };
-
   const handleAddPoint = () => {
     if (renderEditUI) {
       setChartData(
@@ -257,11 +241,7 @@ const ChartComponent = ({ testings }) => {
               dataKey="power"
               name={testings[0]?.sport === "run" ? "Pace" : "Power"}
               unit={testings[0]?.sport === "run" ? "/km" : "W"}
-              domain={
-                testings[0]?.sport === "run"
-                  ? [sortedPowers[0], sortedPowers[sortedPowers.length - 1]]
-                  : ["dataMin", "dataMax"]
-              }
+              domain={[zoomDomain.left, zoomDomain.right]}
               tickFormatter={(tick) =>
                 testings[0]?.sport === "run"
                   ? secondsToPace(tick)
@@ -293,7 +273,6 @@ const ChartComponent = ({ testings }) => {
                   dot={true}
                   connectNulls
                   isAnimationActive={false}
-                  activeDot={{ r: 6 }}
                 />
               );
             })}
@@ -305,7 +284,6 @@ const ChartComponent = ({ testings }) => {
                 stroke="#82ca9d"
                 dot={true}
                 isAnimationActive={false}
-                activeDot={{ r: 6 }}
               />
             )}
 
