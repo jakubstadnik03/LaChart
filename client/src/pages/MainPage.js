@@ -17,28 +17,29 @@ const MainPage = () => {
   const [selectedTestingIds, setSelectedTestingIds] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [athlete, setAthlete] = useState(null);  
+  const [athlete, setAthlete] = useState(null);
   const [currentAthlete, setCurrentAthlete] = useState(null);
+  const colors = ["#8884d8", "#82ca9d", "#ffc658"];
 
   const selectedAthlete = athletes.find(
     (athlete) => athlete.id === selectedAthleteId
   );
   const handleEditAthlete = () => {
-    console.log('Edit profile clicked');
+    console.log("Edit profile clicked");
 
     setEditModalOpen(true);
   };
   const handleOpenNewAthleteModal = () => {
-    setCurrentAthlete(null);  // No athlete means we're adding a new one
+    setCurrentAthlete(null); // No athlete means we're adding a new one
     setEditModalOpen(true);
   };
   const handleSaveAthlete = (athleteDetails) => {
-    console.log('Athlete Saved:', athleteDetails);
+    console.log("Athlete Saved:", athleteDetails);
     setEditModalOpen(false);
     // Save athlete details to state or backend here
   };
   const handleSignOut = () => {
-    setIsLoggedIn(false);  // Simulating sign out
+    setIsLoggedIn(false); // Simulating sign out
     // Normally, you'd also clear session/storage data here if applicable
   };
   const handleAddNewAthlete = () => {
@@ -130,21 +131,21 @@ const MainPage = () => {
           onSelectAthlete={setSelectedAthleteId}
           onAddNewAthlete={handleOpenNewAthleteModal}
           onSignOut={handleSignOut}
-
         />
-        <Box sx={{ flex: 1, ml: 3 }}>
-        
-          <AthleteProfile athlete={selectedAthlete} onEdit={handleEditAthlete}/>
+        <Box sx={{ flex: 1, ml: { xs: 0, sm: 1, md: 3 } }}>
+          <AthleteProfile
+            athlete={selectedAthlete}
+            onEdit={handleEditAthlete}
+          />
           {editModalOpen && (
-        <EditAthleteModal
-        athlete={selectedAthlete}
-        open={editModalOpen}
-        onClose={() => setEditModalOpen(false)}
-        onSave={handleSaveAthlete}
-      />
-      
-      )}
- 
+            <EditAthleteModal
+              athlete={selectedAthlete}
+              open={editModalOpen}
+              onClose={() => setEditModalOpen(false)}
+              onSave={handleSaveAthlete}
+            />
+          )}
+
           <Box sx={{ display: "flex", justifyContent: "space-around" }}>
             <Box
               sx={{
@@ -217,14 +218,19 @@ const MainPage = () => {
             />
           )}
           {selectedTestings.length > 0 && (
-            <div>
-              {selectedTestings.map((testing, index) => (
-                <>
-                  <Typography key={index} variant="h6" gutterBottom>
+            <>
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                {selectedTestings.map((testing, index) => (
+                  <Typography
+                    key={index}
+                    variant="h6"
+                    gutterBottom
+                    sx={{ m: 2, color: colors[index % colors.length] }}
+                  >
                     Testing Date: {new Date(testing.date).toLocaleDateString()}
                   </Typography>
-                </>
-              ))}
+                ))}
+              </div>
               <Paper elevation={3} sx={{ p: 2 }}>
                 <ChartComponent testings={selectedTestings} />
                 {selectedTestings.length === 1 && (
@@ -235,7 +241,7 @@ const MainPage = () => {
                   </div>
                 )}
               </Paper>
-            </div>
+            </>
           )}
         </Box>
       </Box>

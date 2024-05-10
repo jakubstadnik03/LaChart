@@ -16,16 +16,19 @@ import {
   Typography,
   Box,
   TextField,
-  IconButton, Accordion, AccordionSummary, AccordionDetails,
+  IconButton,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
   Button,
   Switch,
   FormControlLabel,
 } from "@mui/material";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import { useTheme, useMediaQuery } from "@mui/material";
 
 const ChartComponent = ({ testings }) => {
   const [chartData, setChartData] = useState([]);
@@ -33,7 +36,6 @@ const ChartComponent = ({ testings }) => {
   const [data, setData] = useState([]);
   const [originalData, setOriginalData] = useState([]);
   const [showHeartRate, setShowHeartRate] = useState(true);
-
   const [sortedPowers, setSortedPowers] = useState([]);
   const [refAreaLeft, setRefAreaLeft] = useState("");
   const [refAreaRight, setRefAreaRight] = useState("");
@@ -41,24 +43,21 @@ const ChartComponent = ({ testings }) => {
     left: "dataMax",
     right: "dataMin",
   });
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     const powerSet = new Set();
-
     testings.forEach((testing) => {
       testing.points.forEach((point) => {
         powerSet.add(Number(point.power));
       });
     });
-
     let powers = Array.from(powerSet).sort((a, b) => a - b);
     if (testings.length && testings[0].sport === "run") {
-      // Reverse the order for running to show slower paces (higher values) on the right
       powers.reverse();
     }
-
     setSortedPowers(powers);
-
     const combinedData = powers.map((power) => {
       const dataPoint = { power };
       testings.forEach((testing, index) => {
@@ -68,13 +67,8 @@ const ChartComponent = ({ testings }) => {
       });
       return dataPoint;
     });
-
     setChartData(combinedData);
-    // Update the initial zoom domain based on whether the sport is 'run'
-    setZoomDomain({
-      left: powers[0], // smallest number for other sports, largest for run if reversed
-      right: powers[powers.length - 1] // largest number for other sports, smallest for run if reversed
-    });
+    setZoomDomain({ left: powers[0], right: powers[powers.length - 1] });
   }, [testings]);
 
   const secondsToPace = (seconds) => {
@@ -82,129 +76,126 @@ const ChartComponent = ({ testings }) => {
     const secs = seconds % 60;
     return `${minutes}:${secs.toString().padStart(2, "0")}`;
   };
+
   const zoom = () => {
     if (!refAreaLeft || !refAreaRight || refAreaLeft === refAreaRight) {
       setRefAreaLeft("");
       setRefAreaRight("");
       return;
     }
-  
     const start = Math.min(refAreaLeft, refAreaRight);
     const end = Math.max(refAreaLeft, refAreaRight);
-  
-    // Reverse the domain for "run" to show slower paces on the left
     setZoomDomain({
       left: testings[0]?.sport === "run" ? end : start,
       right: testings[0]?.sport === "run" ? start : end,
     });
-  
     setRefAreaLeft("");
     setRefAreaRight("");
   };
-  
 
   const resetZoom = () => {
     setZoomDomain({
-      left: sortedPowers[0],  
-      right: sortedPowers[sortedPowers.length - 1]  
+      left: sortedPowers[0],
+      right: sortedPowers[sortedPowers.length - 1],
     });
   };
-  
-  
 
   const handleAddPoint = () => {
-    if (renderEditUI) {
-      setChartData(
-        chartData.concat([{ power: "", lactate: "", heartRate: "" }])
-      );
-    }
+    setChartData(chartData.concat([{ power: "", lactate: "", heartRate: "" }]));
   };
+
   const handleResetChanges = () => {
-    if (renderEditUI) {
-      setChartData(originalData);
-    }
+    setChartData(originalData);
   };
 
   const handleToggleHeartRate = (event) => {
     setShowHeartRate(event.target.checked);
   };
+
   const handleValueChange = (index, field, value) => {
-    if (renderEditUI) {
-      const newData = [...chartData];
-      newData[index][field] = Number(value) || "";
-      setData(newData);
-    }
+    const newData = [...chartData];
+    newData[index][field] = Number(value) || "";
+    setData(newData);
   };
+
   const renderTestingInfo = () => {
     return testings.map((testing, index) => (
-        <Accordion key={index} style={{marginTop: "-60px", marginBottom: "30px"}}>
-            <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-            >
-                <Typography sx={{ width: '33%', flexShrink: 0 }}>
-                    Testing: {new Date(testing.date).toLocaleDateString()}
+      <Accordion
+        key={index}
+        style={{ marginTop: "-60px", marginBottom: "30px" }}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography sx={{ width: "33%", flexShrink: 0 }}>
+            Testing: {new Date(testing.date).toLocaleDateString()}
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Card
+            raised
+            sx={{
+              width: "100%",
+              mb: 2,
+              bgcolor: colors[index % colors.length],
+              color: "white",
+              fontWeight: "bold",
+            }}
+          >
+            <CardContent>
+              <Typography variant="subtitle1">
+                Sport:{" "}
+                {testing.sport.charAt(0).toUpperCase() + testing.sport.slice(1)}
+              </Typography>
+              <Typography variant="subtitle1">
+                Weight: {testing.weight} kg
+              </Typography>
+              <Typography variant="subtitle1">
+                Indoor/Outdoor: {testing.indoorOutdoor}
+              </Typography>
+              {testing.sport === "run" && (
+                <Typography variant="subtitle1">
+                  Type of Shoes: {testing.typeOfShoes}
                 </Typography>
-
-            </AccordionSummary>
-            <AccordionDetails>
-                <Card raised sx={{ width: '100%', mb: 2 }}>
-                    <CardContent>
-                        <Typography variant="subtitle1">
-                            Sport: {testing.sport.charAt(0).toUpperCase() + testing.sport.slice(1)}
-                        </Typography>
-                        <Typography variant="subtitle1">
-                            Weight: {testing.weight} kg
-                        </Typography>
-                        <Typography variant="subtitle1">
-                            Indoor/Outdoor: {testing.indoorOutdoor}
-                        </Typography>
-                        {testing.sport === "run" && (
-                            <Typography variant="subtitle1">
-                                Type of Shoes: {testing.typeOfShoes}
-                            </Typography>
-                        )}
-                        {testing.sport === "bike" && (
-                            <Typography variant="subtitle1">
-                                Type of Bike: {testing.bikeType}
-                            </Typography>
-                        )}
-                        {testing.sport === "swim" && (
-                            <Typography variant="subtitle1">
-                                Pool Length: {testing.poolLength} m
-                            </Typography>
-                        )}
-                        <Typography variant="body1">
-                            Description: {testing.description}
-                        </Typography>
-                    </CardContent>
-                </Card>
-            </AccordionDetails>
-        </Accordion>
+              )}
+              {testing.sport === "bike" && (
+                <Typography variant="subtitle1">
+                  Type of Bike: {testing.bikeType}
+                </Typography>
+              )}
+              {testing.sport === "swim" && (
+                <Typography variant="subtitle1">
+                  Pool Length: {testing.poolLength} m
+                </Typography>
+              )}
+              <Typography variant="body1">
+                Description: {testing.description}
+              </Typography>
+            </CardContent>
+          </Card>
+        </AccordionDetails>
+      </Accordion>
     ));
-};
+  };
 
   const removeInputField = (index) => {
-    if (renderEditUI) {
-      const newInputFields = [...chartData];
-      newInputFields.splice(index, 1);
-      setChartData(newInputFields);
-    }
+    const newInputFields = [...chartData];
+    newInputFields.splice(index, 1);
+    setChartData(newInputFields);
   };
+
   const renderEditUI = testings.length === 1;
 
   const handleSaveChanges = () => {
-    if (renderEditUI) {
-      setOriginalData([...chartData]);
-      // Integrate save logic here, such as updating the backend
-    }
+    setOriginalData([...chartData]);
   };
+
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
-      const sport = testings[0]?.sport; // Assuming 'testings' array is available in this scope
-      const displayPace = sport === "run"; // Check if the sport is running to decide on displaying pace
-
+      const sport = testings[0]?.sport;
+      const displayPace = sport === "run";
       return (
         <div
           className="custom-tooltip"
@@ -219,39 +210,39 @@ const ChartComponent = ({ testings }) => {
               ? `Pace: ${secondsToPace(payload[0].payload.power)}`
               : `Power: ${payload[0].payload.power} W`}
           </p>
-          {payload.map((entry, index) => {
-            // Generate the content dynamically for each dataset
-            return (
-              <>
-                {entry.payload[`lactate${index + 1}`] !== undefined && (
-                  <p style={{ color: colors[index] }}>
-                    Lactate{index + 1}: {entry.payload[`lactate${index + 1}`]}{" "}
-                    mmol/L
-                  </p>
-                )}
-                {entry.payload[`heartRate${index + 1}`] !== undefined && (
-                  <p style={{ color: colors[index] }}>
-                    Heart Rate{index + 1}:{" "}
-                    {entry.payload[`heartRate${index + 1}`]} bpm
-                  </p>
-                )}
-              </>
-            );
-          })}
+          {payload.map((entry, index) => (
+            <>
+              {entry.payload[`lactate${index + 1}`] !== undefined && (
+                <p style={{ color: colors[index] }}>
+                  Lactate{index + 1}: {entry.payload[`lactate${index + 1}`]}{" "}
+                  mmol/L
+                </p>
+              )}
+              {entry.payload[`heartRate${index + 1}`] !== undefined && (
+                <p style={{ color: colors[index] }}>
+                  Heart Rate{index + 1}:{" "}
+                  {entry.payload[`heartRate${index + 1}`]} bpm
+                </p>
+              )}
+            </>
+          ))}
         </div>
       );
     }
-
     return null;
   };
 
   return (
     <>
-      <Box sx={{ display: "flex", flexDirection: "row", p: 3 }}>
-        <ResponsiveContainer width="100%" height={400}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", sm: "column", md: "row" },
+          p: { xs: 0, md: 3 },
+        }}
+      >
+        <ResponsiveContainer width="100%" height={400} sx={{ mb: 2 }}>
           <LineChart
-            width={500}
-            height={300}
             data={chartData}
             onMouseDown={(e) => setRefAreaLeft(e.activeLabel)}
             onMouseMove={(e) => refAreaLeft && setRefAreaRight(e.activeLabel)}
@@ -264,9 +255,7 @@ const ChartComponent = ({ testings }) => {
               dataKey="power"
               name={testings[0]?.sport === "run" ? "Pace" : "Power"}
               unit={testings[0]?.sport === "run" ? "/km" : "W"}
-              
               domain={[zoomDomain.left, zoomDomain.right]}
-
               tickFormatter={(tick) =>
                 testings[0]?.sport === "run"
                   ? secondsToPace(tick)
@@ -281,8 +270,14 @@ const ChartComponent = ({ testings }) => {
               yAxisId="right"
               orientation="right"
               domain={[60, "auto"]}
+              tick={isMobile ? false : true}
             />
-            <YAxis unit="mmol/L" yAxisId="left" orientation="left" />
+            <YAxis
+              unit="mmol/L"
+              yAxisId="left"
+              orientation="left"
+              tick={isMobile ? false : true}
+            />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
             {testings.map((testing, index) => {
@@ -357,46 +352,60 @@ const ChartComponent = ({ testings }) => {
                 <RestartAltIcon />
               </IconButton>
             </Box>
-            <div>
+            <div style={{ marginTop: "60px" }}>
               {chartData.map((point, index) => {
-                return(
-                <Box
-                  key={index}
-                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}
-                >
-                  <TextField
-                  label={testings[0].sport === "run" ? `Pace ${index + 1}` : `Power ${index + 1}`}
-                    variant="outlined"
-                    value={testings[0].sport === "run" ? secondsToPace(point.power) : point.power}                    onChange={(e) =>
-                      handleValueChange(index, "power", e.target.value)
-                    }
-                  />
-                  <TextField
-                    label={`Lactate ${index + 1}`}
-                    variant="outlined"
-                    type="number"
-                    value={point.lactate1}
-                    onChange={(e) =>
-                      handleValueChange(index, "lactate", e.target.value)
-                    }
-                  />
-                  <TextField
-                    label={`Heart Rate ${index + 1}`}
-                    variant="outlined"
-                    type="number"
-                    value={point.heartRate1}
-                    onChange={(e) =>
-                      handleValueChange(index, "heartRate", e.target.value)
-                    }
-                  />
-                  <IconButton
-                    onClick={() => removeInputField(index)}
-                    color="error"
+                return (
+                  <Box
+                    key={index}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      mb: 2,
+                    }}
                   >
-                    <DeleteIcon />
-                  </IconButton>
-                </Box>
-                )
+                    <TextField
+                      label={
+                        testings[0].sport === "run"
+                          ? `Pace ${index + 1}`
+                          : `Power ${index + 1}`
+                      }
+                      variant="outlined"
+                      value={
+                        testings[0].sport === "run"
+                          ? secondsToPace(point.power)
+                          : point.power
+                      }
+                      onChange={(e) =>
+                        handleValueChange(index, "power", e.target.value)
+                      }
+                    />
+                    <TextField
+                      label={`Lactate ${index + 1}`}
+                      variant="outlined"
+                      type="number"
+                      value={point.lactate1}
+                      onChange={(e) =>
+                        handleValueChange(index, "lactate", e.target.value)
+                      }
+                    />
+                    <TextField
+                      label={`Heart Rate ${index + 1}`}
+                      variant="outlined"
+                      type="number"
+                      value={point.heartRate1}
+                      onChange={(e) =>
+                        handleValueChange(index, "heartRate", e.target.value)
+                      }
+                    />
+                    <IconButton
+                      onClick={() => removeInputField(index)}
+                      color="error"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Box>
+                );
               })}
             </div>
             <Button
@@ -410,7 +419,12 @@ const ChartComponent = ({ testings }) => {
           </div>
         )}
       </Box>
-      <div style={{ display: "flex" }}>
+      <div
+        style={{
+          display: "flex",
+          marginTop: testings.length > 1 ? "90px" : "0",
+        }}
+      >
         {testings.length > 0 && renderTestingInfo()}
       </div>
     </>

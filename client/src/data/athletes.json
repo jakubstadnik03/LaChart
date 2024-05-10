@@ -2,6 +2,7 @@
   {
     "id": 1,
     "name": "Jakub Stádník",
+    "userId": 1,
     "age": 20,
     "weight": 82,
     "sport": "triathlon",
