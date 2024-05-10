@@ -6,17 +6,46 @@ import athletes from "../data/athletes.json";
 import measurements from "../data/measurements.json";
 import PowerLactateForm from "../components/PowerLactateForm";
 import BarChartComponent from "../components/BarChartComponent";
-
+import Login from "../components/login";
+import AthleteProfile from "../components/athleteProfile";
+import EditAthleteModal from "../components/EditAthleteModal";
 const MainPage = () => {
   const [selectedAthleteId, setSelectedAthleteId] = useState(null);
   const [selectedTestingId, setSelectedTestingId] = useState(null);
   const [testingsForAthlete, setTestingsForAthlete] = useState([]);
   const [isCreatingNewTesting, setIsCreatingNewTesting] = useState(false);
   const [selectedTestingIds, setSelectedTestingIds] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [athlete, setAthlete] = useState(null);  
+  const [currentAthlete, setCurrentAthlete] = useState(null);
 
   const selectedAthlete = athletes.find(
     (athlete) => athlete.id === selectedAthleteId
   );
+  const handleEditAthlete = () => {
+    console.log('Edit profile clicked');
+
+    setEditModalOpen(true);
+  };
+  const handleOpenNewAthleteModal = () => {
+    setCurrentAthlete(null);  // No athlete means we're adding a new one
+    setEditModalOpen(true);
+  };
+  const handleSaveAthlete = (athleteDetails) => {
+    console.log('Athlete Saved:', athleteDetails);
+    setEditModalOpen(false);
+    // Save athlete details to state or backend here
+  };
+  const handleSignOut = () => {
+    setIsLoggedIn(false);  // Simulating sign out
+    // Normally, you'd also clear session/storage data here if applicable
+  };
+  const handleAddNewAthlete = () => {
+    // Handle the logic to add a new athlete (show form or modal)
+    console.log("Add new athlete");
+  };
+
   const handleCreateNewTesting = () => {
     if (isCreatingNewTesting === true) {
       setIsCreatingNewTesting(false);
@@ -24,6 +53,7 @@ const MainPage = () => {
       setIsCreatingNewTesting(true);
     }
   };
+
   const handleSelectTesting = (testingId) => {
     const testingToSelect = measurements.find(
       (measurement) => measurement.id === testingId
@@ -88,7 +118,9 @@ const MainPage = () => {
     }
     setIsCreatingNewTesting(false);
   }, [selectedAthleteId]);
-
+  if (!isLoggedIn) {
+    return <Login onLogin={setIsLoggedIn} />;
+  }
   return (
     <>
       <Box sx={{ display: "flex", p: 3 }}>
@@ -96,13 +128,23 @@ const MainPage = () => {
           athletes={athletes}
           selectedAthleteId={selectedAthleteId}
           onSelectAthlete={setSelectedAthleteId}
+          onAddNewAthlete={handleOpenNewAthleteModal}
+          onSignOut={handleSignOut}
+
         />
         <Box sx={{ flex: 1, ml: 3 }}>
-          {selectedAthlete && (
-            <Typography variant="h4" gutterBottom>
-              {selectedAthlete.name}
-            </Typography>
-          )}
+        
+          <AthleteProfile athlete={selectedAthlete} onEdit={handleEditAthlete}/>
+          {editModalOpen && (
+        <EditAthleteModal
+        athlete={selectedAthlete}
+        open={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        onSave={handleSaveAthlete}
+      />
+      
+      )}
+ 
           <Box sx={{ display: "flex", justifyContent: "space-around" }}>
             <Box
               sx={{

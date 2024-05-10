@@ -1,7 +1,8 @@
 import React from 'react';
-import { Drawer, List, ListItem, ListItemText, Typography, Button } from '@mui/material';
+import { Drawer, List, ListItem, ListItemText, Typography, Button, Divider } from '@mui/material';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';  // Logout icon
 
-const Sidebar = ({ athletes = [], selectedAthleteId, onSelectAthlete, onCreateNewTesting }) => {
+const Sidebar = ({ athletes, selectedAthleteId, onSelectAthlete, onSignOut, onAddNewAthlete }) => {
   return (
     <Drawer
       sx={{
@@ -16,26 +17,37 @@ const Sidebar = ({ athletes = [], selectedAthleteId, onSelectAthlete, onCreateNe
       anchor="left"
     >
       <Typography variant="h6" sx={{ my: 2, textAlign: 'center' }}>
-        Logo Here
+       LaChart
       </Typography>
+      <Button onClick={onAddNewAthlete} sx={{ my: 1, mx: 'auto', display: 'block' }}>
+        Add New Athlete
+      </Button>
       <List>
         {athletes.map((athlete) => (
-          <ListItem
-            button
-            key={athlete.id}
-            onClick={() => onSelectAthlete(athlete.id)}
-            sx={{ 
+          <ListItem button key={athlete.id} onClick={() => onSelectAthlete(athlete.id)}
+            sx={{
               fontWeight: athlete.id === selectedAthleteId ? 'bold' : 'normal',
-              color: athlete.id === selectedAthleteId ? 'blue' : 'inherit',
-              display: 'flex', 
-              flexDirection: 'column'
-            }}
-          >
+              color: athlete.id === selectedAthleteId ? 'primary.main' : 'inherit',
+            }}>
             <ListItemText primary={athlete.name} />
-          
           </ListItem>
         ))}
       </List>
+      <Divider sx={{ my: 1 }} />
+      <Button 
+      onClick={onSignOut} 
+      sx={{ 
+        mt: 'auto', 
+        mb: 2, 
+        display: 'flex',  
+        justifyContent: 'center',  
+        alignItems: 'center',  
+        width: '100%'  
+      }} 
+      startIcon={<ExitToAppIcon />}
+    >
+      Sign Out
+    </Button>
     </Drawer>
   );
 };

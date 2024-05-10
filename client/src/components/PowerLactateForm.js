@@ -91,19 +91,21 @@ console.log(newTesting);
     } else {
       powerOrPaceValue = parseFloat(field.powerOrPace);
     }
-  
+
     return {
       index: index + 1,
       powerOrPace: powerOrPaceValue,
       lactate: parseFloat(field.lactate) || 0,
       heartRate: parseInt(field.heartRate, 10) || 0,
     };
-  });
+});
 
-  const paceDomain = sport === 'run' || sport === 'swim' ? [maxPaceInSeconds, minPaceInSeconds] : ['auto', 'auto'];
-  if (sport === 'run') {
-    chartData.sort((a, b) => a.powerOrPace - b.powerOrPace);
+if (sport === 'run') {
+  chartData.sort((a, b) => a.powerOrPace - b.powerOrPace);
 }
+
+const paceDomain = sport === 'run' || sport === 'swim' ? [maxPaceInSeconds, minPaceInSeconds] : ['auto', 'auto'];
+
   
 
   return (
@@ -111,7 +113,7 @@ console.log(newTesting);
       <Typography variant="h4" gutterBottom>
         Power, Lactate & Heart Rate Chart
       </Typography>
-<Box sx={{ display: 'flex', p: 3 }}>
+<Box sx={{ display: 'flex',flexWrap: 'wrap', p: 3 }}>
         <ResponsiveContainer width="100%" height={400}>
           <LineChart
       data={chartData}
@@ -125,7 +127,7 @@ console.log(newTesting);
   name={sport === 'run' || sport === 'swim' ? "Pace" : "Power"}
   unit={sport === 'run' || sport === 'swim' ? "/km" : "W"}
   domain={paceDomain} // Apply the calculated domain here
-  
+  allowDataOverflow
   tickFormatter={(tick) => sport === 'run' || sport === 'swim' ? secondsToPace(tick) : tick.toString()}
 />
   <YAxis type="number" dataKey="lactate" name="Lactate" unit="mmol/L" />
@@ -139,7 +141,8 @@ console.log(newTesting);
           ))
         }
       </Scatter>
-      <Line type="monotone" dataKey="lactate" stroke="#8884d8" dot={{ stroke: '#8884d8', strokeWidth: 2, fill: '#8884d8' }} />
+      <Line type="linear" dataKey="lactate" stroke="#8884d8" dot={{ stroke: '#8884d8', strokeWidth: 2, fill: '#8884d8' }}                   activeDot={{ r: 6 }}
+/>
     
     </LineChart>
   </ResponsiveContainer>

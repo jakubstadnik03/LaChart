@@ -1,6 +1,50 @@
 [
-    { "id": 1, "name": "Jakub Stádník" },
-    { "id": 2, "name": "Jakub Peterka" },
+  {
+    "id": 1,
+    "name": "Jakub Stádník",
+    "age": 20,
+    "weight": 82,
+    "sport": "triathlon",
+    "personalBests": ["Ironman 70.3: 3:55:00", "Olympic Triathlon: 2:05:00"],
+    "injuries": ["Shoulder dislocation 2020"],
+    "bikeZones": {
+      "Easy": [130, 149],
+      "lt1": [150, 180],
+      "l3": [181, 230],
+      "lt2": [231, 270],
+      "vo2": [271, 300]
+    },
+    "runZones": {
+      "Easy": ["5:20", "4:49"],
+      "lt1": ["4:50", "4:20"],
+      "l3": ["4:19", "3:50"],
+      "lt2": ["3:49", "3:20"],
+      "vo2": ["3:19", "3:00"]
+    }
+  },
+   {
+      "id": 2,
+      "name": "Jakub Kokokk",
+      "age": 20,
+      "weight": 82,
+      "sport": "triathlon",
+      "personalBests": ["Ironman 70.3: 3:55:00", "Olympic Triathlon: 2:05:00"],
+      "injuries": ["Shoulder dislocation 2020"],
+      "bikeZones": {
+"Easy": [130, 149],
+        "lt1": [150, 180],
+        "l3": [181, 230],
+        "lt2": [231, 270],
+        "vo2": [271, 300]
+      },
+      "runZones": {
+        "Easy": ["5:20", "4:49"],
+
+        "lt1": ["4:50", "4:20"],
+        "l3": ["4:19", "3:50"],
+        "lt2": ["3:49", "3:20"],
+        "vo2": ["3:19", "3:00"]
+      }},
     { "id": 3, "name": "Ondřej Gajdoš" },
     { "id": 4, "name": "Filip Stádník" }
   ]

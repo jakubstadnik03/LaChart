@@ -16,11 +16,13 @@ import {
   Typography,
   Box,
   TextField,
-  IconButton,
+  IconButton, Accordion, AccordionSummary, AccordionDetails,
   Button,
   Switch,
   FormControlLabel,
 } from "@mui/material";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
@@ -70,8 +72,8 @@ const ChartComponent = ({ testings }) => {
     setChartData(combinedData);
     // Update the initial zoom domain based on whether the sport is 'run'
     setZoomDomain({
-      left: testings[0]?.sport === "run" ? "dataMax" : "dataMin",
-      right: testings[0]?.sport === "run" ? "dataMin" : "dataMax",
+      left: powers[0], // smallest number for other sports, largest for run if reversed
+      right: powers[powers.length - 1] // largest number for other sports, smallest for run if reversed
     });
   }, [testings]);
 
@@ -86,32 +88,29 @@ const ChartComponent = ({ testings }) => {
       setRefAreaRight("");
       return;
     }
-
-    // Find indices for refAreaLeft and refAreaRight in sortedPowers
-    const startPower = Math.min(refAreaLeft, refAreaRight);
-    const endPower = Math.max(refAreaLeft, refAreaRight);
-
+  
+    const start = Math.min(refAreaLeft, refAreaRight);
+    const end = Math.max(refAreaLeft, refAreaRight);
+  
+    // Reverse the domain for "run" to show slower paces on the left
     setZoomDomain({
-      left: testings[0]?.sport === "run" ? endPower : startPower,
-      right: testings[0]?.sport === "run" ? startPower : endPower,
+      left: testings[0]?.sport === "run" ? end : start,
+      right: testings[0]?.sport === "run" ? start : end,
     });
-
+  
     setRefAreaLeft("");
     setRefAreaRight("");
   };
+  
 
   const resetZoom = () => {
     setZoomDomain({
-      left:
-        testings[0]?.sport === "run"
-          ? sortedPowers[sortedPowers.length - 1]
-          : sortedPowers[0],
-      right:
-        testings[0]?.sport === "run"
-          ? sortedPowers[0]
-          : sortedPowers[sortedPowers.length - 1],
+      left: sortedPowers[0],  
+      right: sortedPowers[sortedPowers.length - 1]  
     });
   };
+  
+  
 
   const handleAddPoint = () => {
     if (renderEditUI) {
@@ -138,45 +137,53 @@ const ChartComponent = ({ testings }) => {
   };
   const renderTestingInfo = () => {
     return testings.map((testing, index) => (
-      <Card key={index} raised sx={{ maxWidth: 345, mb: 2, mt: 2, mr: 2 }}>
-        <CardContent sx={{ color: colors[index % colors.length] }}>
-          {" "}
-          {/* Apply the color dynamically */}
-          <Typography variant="h6" gutterBottom>
-            Testing Date: {new Date(testing.date).toLocaleDateString()}
-          </Typography>
-          <Typography variant="subtitle1">
-            Sport:{" "}
-            {testing.sport.charAt(0).toUpperCase() + testing.sport.slice(1)}
-          </Typography>
-          <Typography variant="subtitle1">
-            Weight: {testing.weight} kg
-          </Typography>
-          <Typography variant="subtitle1">
-            Indoor/Outdoor: {testing.indoorOutdoor}
-          </Typography>
-          {testing.sport === "run" && (
-            <Typography variant="subtitle1">
-              Type of Shoes: {testing.typeOfShoes}
-            </Typography>
-          )}
-          {testing.sport === "bike" && (
-            <Typography variant="subtitle1">
-              Type of Bike: {testing.bikeType}
-            </Typography>
-          )}
-          {testing.sport === "swim" && (
-            <Typography variant="subtitle1">
-              Pool Length: {testing.poolLength} m
-            </Typography>
-          )}
-          <Typography variant="body1">
-            Description: {testing.description}
-          </Typography>
-        </CardContent>
-      </Card>
+        <Accordion key={index} style={{marginTop: "-60px", marginBottom: "30px"}}>
+            <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+            >
+                <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                    Testing: {new Date(testing.date).toLocaleDateString()}
+                </Typography>
+
+            </AccordionSummary>
+            <AccordionDetails>
+                <Card raised sx={{ width: '100%', mb: 2 }}>
+                    <CardContent>
+                        <Typography variant="subtitle1">
+                            Sport: {testing.sport.charAt(0).toUpperCase() + testing.sport.slice(1)}
+                        </Typography>
+                        <Typography variant="subtitle1">
+                            Weight: {testing.weight} kg
+                        </Typography>
+                        <Typography variant="subtitle1">
+                            Indoor/Outdoor: {testing.indoorOutdoor}
+                        </Typography>
+                        {testing.sport === "run" && (
+                            <Typography variant="subtitle1">
+                                Type of Shoes: {testing.typeOfShoes}
+                            </Typography>
+                        )}
+                        {testing.sport === "bike" && (
+                            <Typography variant="subtitle1">
+                                Type of Bike: {testing.bikeType}
+                            </Typography>
+                        )}
+                        {testing.sport === "swim" && (
+                            <Typography variant="subtitle1">
+                                Pool Length: {testing.poolLength} m
+                            </Typography>
+                        )}
+                        <Typography variant="body1">
+                            Description: {testing.description}
+                        </Typography>
+                    </CardContent>
+                </Card>
+            </AccordionDetails>
+        </Accordion>
     ));
-  };
+};
 
   const removeInputField = (index) => {
     if (renderEditUI) {
@@ -257,11 +264,9 @@ const ChartComponent = ({ testings }) => {
               dataKey="power"
               name={testings[0]?.sport === "run" ? "Pace" : "Power"}
               unit={testings[0]?.sport === "run" ? "/km" : "W"}
-              domain={
-                testings[0]?.sport === "run"
-                  ? [sortedPowers[0], sortedPowers[sortedPowers.length - 1]]
-                  : ["dataMin", "dataMax"]
-              }
+              
+              domain={[zoomDomain.left, zoomDomain.right]}
+
               tickFormatter={(tick) =>
                 testings[0]?.sport === "run"
                   ? secondsToPace(tick)
@@ -353,17 +358,16 @@ const ChartComponent = ({ testings }) => {
               </IconButton>
             </Box>
             <div>
-              {chartData.map((point, index) => (
+              {chartData.map((point, index) => {
+                return(
                 <Box
                   key={index}
                   sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}
                 >
                   <TextField
-                    label={`Power ${index + 1}`}
+                  label={testings[0].sport === "run" ? `Pace ${index + 1}` : `Power ${index + 1}`}
                     variant="outlined"
-                    type="number"
-                    value={point.power}
-                    onChange={(e) =>
+                    value={testings[0].sport === "run" ? secondsToPace(point.power) : point.power}                    onChange={(e) =>
                       handleValueChange(index, "power", e.target.value)
                     }
                   />
@@ -392,7 +396,8 @@ const ChartComponent = ({ testings }) => {
                     <DeleteIcon />
                   </IconButton>
                 </Box>
-              ))}
+                )
+              })}
             </div>
             <Button
               variant="contained"
