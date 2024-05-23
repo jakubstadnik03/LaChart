@@ -18,10 +18,11 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 // Route Imports
 const athletesRoutes = require('./routes/athletesRoutes');
 const measurementsRoutes = require('./routes/measurementsRoutes');
-
+const userListRoute = require('./routes/userListRoute');
 // Routes Middleware
 app.use('/athletes', athletesRoutes);
 app.use('/measurements', measurementsRoutes);
+app.use("/user", userListRoute);
 
 // Base Route
 app.get('/', (req, res) => {

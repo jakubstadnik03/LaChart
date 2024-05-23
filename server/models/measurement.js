@@ -17,6 +17,11 @@ const measurementSchema = new mongoose.Schema({
     default: Date.now // Automatically set to current date & time
   },
   sport: String,
+  indoorOutdoor: String, // Added field for environment setting
+  weight: Number, // Added field for weight to track conditions or changes
+  typeOfShoes: String, // Optional, only relevant for running
+  bikeType: String, // Optional, only relevant for cycling
+  poolLength: Number, // Optional, only relevant for swimming
   description: String,
   points: [pointSchema],
 }, { timestamps: true }); // Adds createdAt and updatedAt timestamps

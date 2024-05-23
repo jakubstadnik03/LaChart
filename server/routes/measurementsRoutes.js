@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const Measurement = require('../models/measurement');
-const measurementService = require('../services/measurementService');
+const measurementABL = require('../abl/measurement-abl');
+const verifyToken = require('../middleware/verifyToken');
 
 // POST /measurements - Create a new measurement
-router.post('/', async (req, res) => {
+router.post('/', verifyToken, async (req, res) => {
   try {
-    const measurement = await measurementService.createMeasurement(req.body);
+    const measurement = await measurementABL.createMeasurement(req.body);
     res.status(201).json(measurement);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -14,57 +14,38 @@ router.post('/', async (req, res) => {
 });
 
 // GET /measurements/:athleteId - Get measurements for an athlete
-router.get('/:athleteId', async (req, res) => {
+router.get('/:athleteId', verifyToken,  async (req, res) => {
   try {
-    const measurements = await measurementService.getMeasurementsByAthleteId(req.params.athleteId);
+    const measurements = await measurementABL.getMeasurementsByAthleteId(req.params.athleteId);
     res.json(measurements);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
-router.get('/measurement/:id', async (req, res) => {
-    try {
-      const measurement = await Measurement.findById(req.params.id);
-      console.log(req.params.id);
-      if (!measurement) {
-        return res.status(404).json({ message: 'Measurement not found' });
-      }
-      res.json(measurement);
-    } catch (error) {
-      // This catches and responds to any errors, including invalid ObjectId errors
-      res.status(500).json({ message: error.message });
-    }
-  });
-  router.put('/:id', async (req, res) => {
-    try {
-      const { id } = req.params;
-      const update = req.body;
-      
-      // Option `{ new: true }` ensures the updated document is returned
-      const updatedMeasurement = await Measurement.findByIdAndUpdate(id, update, { new: true });
-      if (!updatedMeasurement) {
-        return res.status(404).json({ message: 'Measurement not found' });
-      }
-      res.json(updatedMeasurement);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  });
-// POST /measurements - Create a new measurement
-router.post('/', async (req, res) => {
-  const measurement = new Measurement({
-    athleteId: req.body.athleteId,
-    sport: req.body.sport,
-    description: req.body.description,
-    points: req.body.points,
-    // date is automatically set to current date and time
-  });
 
+// GET /measurement/:id - Get a specific measurement
+router.get('/measurement/:id', verifyToken, async (req, res) => {
   try {
-    const newMeasurement = await measurement.save();
-    res.status(201).json(newMeasurement);
+    const measurement = await measurementABL.getMeasurementById(req.params.id);
+    if (!measurement) {
+      return res.status(404).json({ message: 'Measurement not found' });
+    }
+    res.json(measurement);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// PUT /measurements/:id - Update a measurement
+router.put('/:id', verifyToken, async (req, res) => {
+  try {
+    const updatedMeasurement = await measurementABL.updateMeasurement(req.params.id, req.body);
+    if (!updatedMeasurement) {
+      return res.status(404).json({ message: 'Measurement not found' });
+    }
+    res.json(updatedMeasurement);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
