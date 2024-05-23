@@ -45,6 +45,7 @@ const ChartComponent = ({ testings }) => {
   });
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
 
   useEffect(() => {
     const powerSet = new Set();
@@ -241,13 +242,21 @@ const ChartComponent = ({ testings }) => {
           p: { xs: 0, md: 3 },
         }}
       >
-        <ResponsiveContainer width="100%" height={400} sx={{ mb: 2 }}>
+        <ResponsiveContainer
+          width="100%"
+          height={isMobile ? 300 : 400}
+          sx={{ mb: 2, p: 0 }}
+        >
           <LineChart
             data={chartData}
             onMouseDown={(e) => setRefAreaLeft(e.activeLabel)}
             onMouseMove={(e) => refAreaLeft && setRefAreaRight(e.activeLabel)}
             onMouseUp={zoom}
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+            margin={
+              isMobile
+                ? { top: 0, right: 0, left: 0, bottom: 5 }
+                : { top: 5, right: 30, left: 20, bottom: 5 }
+            }
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
@@ -301,7 +310,7 @@ const ChartComponent = ({ testings }) => {
               <Line
                 yAxisId="right"
                 type="linear"
-                dataKey="heartRate1"
+                dataKey="heartRate"
                 stroke="#82ca9d"
                 dot={true}
                 isAnimationActive={false}
@@ -342,7 +351,7 @@ const ChartComponent = ({ testings }) => {
                 display: "flex",
                 justifyContent: "flex-end",
                 mb: 1,
-                mt: -5,
+                mt: isLargeScreen ? -5 : 5,
               }}
             >
               <IconButton onClick={handleAddPoint} color="primary">
@@ -352,7 +361,7 @@ const ChartComponent = ({ testings }) => {
                 <RestartAltIcon />
               </IconButton>
             </Box>
-            <div style={{ marginTop: "60px" }}>
+            <div style={{ marginTop: isLargeScreen ? "60px" : "0px" }}>
               {chartData.map((point, index) => {
                 return (
                   <Box

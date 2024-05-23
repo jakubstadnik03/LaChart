@@ -23,7 +23,7 @@ const Sidebar = ({
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleDrawerToggle = () => {
     setIsDrawerOpen(!isDrawerOpen);
@@ -37,14 +37,25 @@ const Sidebar = ({
         edge="start"
         onClick={handleDrawerToggle}
         sx={{
-          mr: 2,
+          ml: -2,
+          mt: -2,
           display: isMobile ? "block" : "none",
           selfAlign: "baseline",
           alignSelf: "baseline",
           position: "fixed",
+          fontSize: "3rem",
         }}
       >
-        <MenuIcon />
+        <MenuIcon
+          sx={{
+            fontSize: "inherit",
+            backgroundColor: "#1976d263",
+            borderRadius: "100%",
+            color: "white",
+            p: 1,
+            boxShadow: 3,
+          }}
+        />
       </IconButton>
       <Drawer
         sx={{
