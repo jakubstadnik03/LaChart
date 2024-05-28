@@ -310,7 +310,7 @@ const ChartComponent = ({ testings }) => {
               <Line
                 yAxisId="right"
                 type="linear"
-                dataKey="heartRate"
+                dataKey="heartRate1"
                 stroke="#82ca9d"
                 dot={true}
                 isAnimationActive={false}
