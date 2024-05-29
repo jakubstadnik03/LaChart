@@ -6,8 +6,8 @@ import athletes from "../data/athletes.json";
 import measurements from "../data/measurements.json";
 import PowerLactateForm from "../components/PowerLactateForm";
 import BarChartComponent from "../components/BarChartComponent";
-import Login from "../components/login";
-import AthleteProfile from "../components/athleteProfile";
+import Login from "../components/Login";
+import AthleteProfile from "../components/AthleteProfile";
 import EditAthleteModal from "../components/EditAthleteModal";
 const MainPage = () => {
   const [selectedAthleteId, setSelectedAthleteId] = useState(null);
@@ -20,19 +20,32 @@ const MainPage = () => {
   const [athlete, setAthlete] = useState(null);
   const [currentAthlete, setCurrentAthlete] = useState(null);
   const colors = ["#8884d8", "#82ca9d", "#ffc658"];
-
   const selectedAthlete = athletes.find(
     (athlete) => athlete.id === selectedAthleteId
   );
+  useEffect(() => {
+    const foundAthlete = athletes.find(athlete => athlete.id === selectedAthleteId);
+    setCurrentAthlete(foundAthlete);
+}, [selectedAthleteId]);
+
   const handleEditAthlete = () => {
     console.log("Edit profile clicked");
 
     setEditModalOpen(true);
   };
   const handleOpenNewAthleteModal = () => {
-    setCurrentAthlete(null); // No athlete means we're adding a new one
+    setCurrentAthlete({
+        name: '',
+        age: '',
+        weight: '',
+        personalBests: [],
+        injuries: [],
+        bikeZones: { lt1: ['', ''], lt2: ['', ''], l3: ['', ''], vo2: ['', ''] },
+        runZones: { lt1: ['', ''], lt2: ['', ''], l3: ['', ''], vo2: ['', ''] }
+    });
     setEditModalOpen(true);
-  };
+};
+
   const handleSaveAthlete = (athleteDetails) => {
     console.log("Athlete Saved:", athleteDetails);
     setEditModalOpen(false);
@@ -56,47 +69,50 @@ const MainPage = () => {
   };
 
   const handleSelectTesting = (testingId) => {
-    const testingToSelect = measurements.find(
-      (measurement) => measurement.id === testingId
-    );
-    if (!testingToSelect) return; // Safety check if testing is not found
+    // Find the testing entry by its ID from the measurements array.
+    const testing = measurements.find((measurement) => measurement.id === testingId);
+    
+    // Exit the function early if the testing is not found.
+    if (!testing) return;
 
-    // Check if there are already selected testings
-    if (selectedTestingIds.length > 0) {
-      const alreadySelectedTestings = measurements.filter((measurement) =>
-        selectedTestingIds.includes(measurement.id)
-      );
-      const differentSportExists = alreadySelectedTestings.some(
-        (testing) => testing.sport !== testingToSelect.sport
-      );
+    // Check if the selected testingId is already in the selectedTestingIds array.
+    if (selectedTestingIds.includes(testingId)) {
+        // If it is, remove it from the array.
+        setSelectedTestingIds(selectedTestingIds.filter(id => id !== testingId));
+    } else {
+        // If it's not already selected, check for sport compatibility with currently selected tests.
+        const isIncompatible = selectedTestingIds.some(id => {
+            const existingTest = measurements.find(m => m.id === id);
+            return existingTest.sport !== testing.sport;
+        });
 
-      if (differentSportExists) {
-        alert("Cannot select tests from different sports!");
-        return; // Stop the function from proceeding
-      }
+        // If there is a sport incompatibility, alert the user and do not add the testingId to the array.
+        if (isIncompatible) {
+            alert("Cannot select tests from different sports!");
+            return;
+        }
+
+        // If no incompatibility is found, add the testingId to the selectedTestingIds array.
+        setSelectedTestingIds([...selectedTestingIds, testingId]);
     }
+};
 
-    // Proceed to toggle the selection as usual
-    setSelectedTestingIds((prev) =>
-      prev.includes(testingId)
-        ? prev.filter((id) => id !== testingId)
-        : [...prev, testingId]
-    );
-  };
+
+
 
   const handleSaveNewTesting = (newTestingDetails) => {
     setIsCreatingNewTesting(false);
   };
   useEffect(() => {
     if (selectedAthleteId) {
-      const relatedTestings = measurements
-        .filter((measurement) => measurement.athleteId === selectedAthleteId)
-        .sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date descending
-      setTestingsForAthlete(relatedTestings);
-      setSelectedTestingId(null);
+        const filteredMeasurements = measurements.filter(
+            (measurement) => measurement.athleteId === selectedAthleteId
+        ).sort((a, b) => new Date(b.date) - new Date(a.date));
+        setTestingsForAthlete(filteredMeasurements);
+        setSelectedTestingIds([]);
     }
-    setIsCreatingNewTesting(false);
-  }, [selectedAthleteId]);
+}, [selectedAthleteId]);
+
   const groupedBySport = testingsForAthlete.reduce((acc, curr) => {
     (acc[curr.sport] = acc[curr.sport] || []).push(curr);
     return acc;
@@ -133,13 +149,11 @@ const MainPage = () => {
           onSignOut={handleSignOut}
         />
         <Box sx={{ flex: 1, ml: { xs: 0, sm: 1, md: 3 } }}>
-          <AthleteProfile
-            athlete={selectedAthlete}
-            onEdit={handleEditAthlete}
-          />
+        <AthleteProfile athlete={selectedAthlete} onEdit={handleEditAthlete} />
+
           {editModalOpen && (
             <EditAthleteModal
-              athlete={selectedAthlete}
+              athlete={currentAthlete}
               open={editModalOpen}
               onClose={() => setEditModalOpen(false)}
               onSave={handleSaveAthlete}

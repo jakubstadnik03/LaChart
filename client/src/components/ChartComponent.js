@@ -130,7 +130,7 @@ const ChartComponent = ({ testings }) => {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography sx={{ width: "33%", flexShrink: 0 }}>
+          <Typography sx={{  flexShrink: 0 }}>
             Testing: {new Date(testing.date).toLocaleDateString()}
           </Typography>
         </AccordionSummary>
@@ -361,7 +361,7 @@ const ChartComponent = ({ testings }) => {
                 <RestartAltIcon />
               </IconButton>
             </Box>
-            <div style={{ marginTop: isLargeScreen ? "60px" : "0px" }}>
+            <div style={{ marginTop: isLargeScreen ? "0px" : "0px" }}>
               {chartData.map((point, index) => {
                 return (
                   <Box
