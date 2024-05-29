@@ -52,7 +52,7 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <Container component="main" maxWidth="sm">
+    <Container component="main" maxWidth="sm" style={{ margin: "auto" }}>
       <CssBaseline />
       <Paper
         elevation={6}

@@ -55,7 +55,10 @@ const ChartComponent = ({ testings }) => {
       });
     });
     let powers = Array.from(powerSet).sort((a, b) => a - b);
-    if (testings.length && testings[0].sport === "run") {
+    if (
+      (testings.length && testings[0].sport === "run") ||
+      (testings.length && testings[0].sport === "swim")
+    ) {
       powers.reverse();
     }
     setSortedPowers(powers);
@@ -73,6 +76,11 @@ const ChartComponent = ({ testings }) => {
   }, [testings]);
 
   const secondsToPace = (seconds) => {
+    if (testings[0]?.sport === "swim") {
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${minutes}:${secs.toString().padStart(2, "0")}`;
+    }
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${minutes}:${secs.toString().padStart(2, "0")}`;
@@ -87,8 +95,18 @@ const ChartComponent = ({ testings }) => {
     const start = Math.min(refAreaLeft, refAreaRight);
     const end = Math.max(refAreaLeft, refAreaRight);
     setZoomDomain({
-      left: testings[0]?.sport === "run" ? end : start,
-      right: testings[0]?.sport === "run" ? start : end,
+      left:
+        testings[0]?.sport === "run"
+          ? end
+          : testings[0]?.sport === "swim"
+          ? end
+          : start,
+      right:
+        testings[0]?.sport === "run"
+          ? start
+          : testings[0]?.sport === "swim"
+          ? start
+          : end,
     });
     setRefAreaLeft("");
     setRefAreaRight("");
@@ -130,7 +148,7 @@ const ChartComponent = ({ testings }) => {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography sx={{  flexShrink: 0 }}>
+          <Typography sx={{ flexShrink: 0 }}>
             Testing: {new Date(testing.date).toLocaleDateString()}
           </Typography>
         </AccordionSummary>
@@ -240,6 +258,7 @@ const ChartComponent = ({ testings }) => {
           display: "flex",
           flexDirection: { xs: "column", sm: "column", md: "row" },
           p: { xs: 0, md: 3 },
+          maxWidth: "1620",
         }}
       >
         <ResponsiveContainer
@@ -263,10 +282,18 @@ const ChartComponent = ({ testings }) => {
               type="number"
               dataKey="power"
               name={testings[0]?.sport === "run" ? "Pace" : "Power"}
-              unit={testings[0]?.sport === "run" ? "/km" : "W"}
+              unit={
+                testings[0]?.sport === "run"
+                  ? "/km"
+                  : testings[0]?.sport === "bike"
+                  ? "W"
+                  : "/100m"
+              }
               domain={[zoomDomain.left, zoomDomain.right]}
               tickFormatter={(tick) =>
                 testings[0]?.sport === "run"
+                  ? secondsToPace(tick)
+                  : testings[0]?.sport === "swim"
                   ? secondsToPace(tick)
                   : tick.toString()
               }
@@ -377,11 +404,15 @@ const ChartComponent = ({ testings }) => {
                       label={
                         testings[0].sport === "run"
                           ? `Pace ${index + 1}`
+                          : testings[0].sport === "swim"
+                          ? `Pace ${index + 1}`
                           : `Power ${index + 1}`
                       }
                       variant="outlined"
                       value={
                         testings[0].sport === "run"
+                          ? secondsToPace(point.power)
+                          : testings[0].sport === "swim"
                           ? secondsToPace(point.power)
                           : point.power
                       }

@@ -326,25 +326,45 @@
     },
     {
         "id": 7,
-        "athleteId": 2,
+        "athleteId": 1,
         "date": "2024-01-13 12:54:06",
         "sport": "swim",
         "description": "Tady je krátký popisek k měření. Počasí, pocity...",
         "points": [
             {
-                "power": "200",
+                "power": "110",
                 "lactate": "0.9",
                 "heartRate": "105"
             },{
-                "power": "230",
+                "power": "100",
                 "lactate": "0.8",
                 "heartRate": "110"
             },
             
             {
-                "power": "390",
+                "power": "90",
+                "lactate": "1.1",
+                "heartRate": "122"
+            },
+            
+            {
+                "power": "80",
+                "lactate": "2.0",
+                "heartRate": "140"
+            }
+            ,
+            
+            {
+                "power": "75",
                 "lactate": "3.3",
                 "heartRate": "148"
+            }
+            ,
+            
+            {
+                "power": "70",
+                "lactate": "4.3",
+                "heartRate": "165"
             }
         ]
     },

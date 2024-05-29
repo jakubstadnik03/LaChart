@@ -3,5 +3,6 @@
     "Surname": "Kubeš",
     "email": "teset@gmail.com",
     "password": "ahoj",
-    "role": "coach"
+    "role": "coach",
+    "id": "1"
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Box, Typography, Paper } from "@mui/material";
+import { Button, Box, Typography, Paper, useTheme } from "@mui/material";
 import Sidebar from "../components/Sidebar"; // Adjust the import path as needed
 import ChartComponent from "../components/ChartComponent";
 import athletes from "../data/athletes.json";
@@ -9,24 +9,27 @@ import BarChartComponent from "../components/BarChartComponent";
 import Login from "../components/Login";
 import AthleteProfile from "../components/AthleteProfile";
 import EditAthleteModal from "../components/EditAthleteModal";
+import { useMediaQuery } from "@mui/material";
+
 const MainPage = () => {
   const [selectedAthleteId, setSelectedAthleteId] = useState(null);
-  const [selectedTestingId, setSelectedTestingId] = useState(null);
   const [testingsForAthlete, setTestingsForAthlete] = useState([]);
   const [isCreatingNewTesting, setIsCreatingNewTesting] = useState(false);
   const [selectedTestingIds, setSelectedTestingIds] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [athlete, setAthlete] = useState(null);
   const [currentAthlete, setCurrentAthlete] = useState(null);
   const colors = ["#8884d8", "#82ca9d", "#ffc658"];
+
   const selectedAthlete = athletes.find(
     (athlete) => athlete.id === selectedAthleteId
   );
   useEffect(() => {
-    const foundAthlete = athletes.find(athlete => athlete.id === selectedAthleteId);
+    const foundAthlete = athletes.find(
+      (athlete) => athlete.id === selectedAthleteId
+    );
     setCurrentAthlete(foundAthlete);
-}, [selectedAthleteId]);
+  }, [selectedAthleteId]);
 
   const handleEditAthlete = () => {
     console.log("Edit profile clicked");
@@ -35,16 +38,16 @@ const MainPage = () => {
   };
   const handleOpenNewAthleteModal = () => {
     setCurrentAthlete({
-        name: '',
-        age: '',
-        weight: '',
-        personalBests: [],
-        injuries: [],
-        bikeZones: { lt1: ['', ''], lt2: ['', ''], l3: ['', ''], vo2: ['', ''] },
-        runZones: { lt1: ['', ''], lt2: ['', ''], l3: ['', ''], vo2: ['', ''] }
+      name: "",
+      age: "",
+      weight: "",
+      personalBests: [],
+      injuries: [],
+      bikeZones: { lt1: ["", ""], lt2: ["", ""], l3: ["", ""], vo2: ["", ""] },
+      runZones: { lt1: ["", ""], lt2: ["", ""], l3: ["", ""], vo2: ["", ""] },
     });
     setEditModalOpen(true);
-};
+  };
 
   const handleSaveAthlete = (athleteDetails) => {
     console.log("Athlete Saved:", athleteDetails);
@@ -67,51 +70,44 @@ const MainPage = () => {
       setIsCreatingNewTesting(true);
     }
   };
+  const theme = useTheme();
+
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSelectTesting = (testingId) => {
-    // Find the testing entry by its ID from the measurements array.
-    const testing = measurements.find((measurement) => measurement.id === testingId);
-    
-    // Exit the function early if the testing is not found.
+    const testing = measurements.find(
+      (measurement) => measurement.id === testingId
+    );
     if (!testing) return;
-
-    // Check if the selected testingId is already in the selectedTestingIds array.
     if (selectedTestingIds.includes(testingId)) {
-        // If it is, remove it from the array.
-        setSelectedTestingIds(selectedTestingIds.filter(id => id !== testingId));
+      setSelectedTestingIds(
+        selectedTestingIds.filter((id) => id !== testingId)
+      );
     } else {
-        // If it's not already selected, check for sport compatibility with currently selected tests.
-        const isIncompatible = selectedTestingIds.some(id => {
-            const existingTest = measurements.find(m => m.id === id);
-            return existingTest.sport !== testing.sport;
-        });
-
-        // If there is a sport incompatibility, alert the user and do not add the testingId to the array.
-        if (isIncompatible) {
-            alert("Cannot select tests from different sports!");
-            return;
-        }
-
-        // If no incompatibility is found, add the testingId to the selectedTestingIds array.
-        setSelectedTestingIds([...selectedTestingIds, testingId]);
+      const isIncompatible = selectedTestingIds.some((id) => {
+        const existingTest = measurements.find((m) => m.id === id);
+        return existingTest.sport !== testing.sport;
+      });
+      if (isIncompatible) {
+        alert("Cannot select tests from different sports!");
+        return;
+      }
+      setSelectedTestingIds([...selectedTestingIds, testingId]);
     }
-};
-
-
-
+  };
 
   const handleSaveNewTesting = (newTestingDetails) => {
     setIsCreatingNewTesting(false);
   };
   useEffect(() => {
     if (selectedAthleteId) {
-        const filteredMeasurements = measurements.filter(
-            (measurement) => measurement.athleteId === selectedAthleteId
-        ).sort((a, b) => new Date(b.date) - new Date(a.date));
-        setTestingsForAthlete(filteredMeasurements);
-        setSelectedTestingIds([]);
+      const filteredMeasurements = measurements
+        .filter((measurement) => measurement.athleteId === selectedAthleteId)
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+      setTestingsForAthlete(filteredMeasurements);
+      setSelectedTestingIds([]);
     }
-}, [selectedAthleteId]);
+  }, [selectedAthleteId]);
 
   const groupedBySport = testingsForAthlete.reduce((acc, curr) => {
     (acc[curr.sport] = acc[curr.sport] || []).push(curr);
@@ -149,7 +145,10 @@ const MainPage = () => {
           onSignOut={handleSignOut}
         />
         <Box sx={{ flex: 1, ml: { xs: 0, sm: 1, md: 3 } }}>
-        <AthleteProfile athlete={selectedAthlete} onEdit={handleEditAthlete} />
+          <AthleteProfile
+            athlete={selectedAthlete}
+            onEdit={handleEditAthlete}
+          />
 
           {editModalOpen && (
             <EditAthleteModal
@@ -160,7 +159,13 @@ const MainPage = () => {
             />
           )}
 
-          <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-around",
+              flexDirection: isMobile ? "column" : "row", // This will dynamically change based on the screen size
+            }}
+          >
             <Box
               sx={{
                 display: "flex",

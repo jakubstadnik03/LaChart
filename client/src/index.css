@@ -17,3 +17,8 @@ code {
     font-size: 14px;
   }
 }
+@media (min-width: 1925px) {
+  * {
+    font-size: 22px;
+  }
+}

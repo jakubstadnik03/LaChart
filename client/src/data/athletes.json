@@ -26,6 +26,7 @@
    {
       "id": 2,
       "name": "Jakub Kokokk",
+      "userId": 1,
       "age": 20,
       "weight": 82,
       "sport": "triathlon",
@@ -46,7 +47,7 @@
         "lt2": ["3:49", "3:20"],
         "vo2": ["3:19", "3:00"]
       }},
-    { "id": 3, "name": "Ondřej Gajdoš" },
+    { "id": 3, "name": "Ondřej Gajdoš", "userId": 1},
     { "id": 4, "name": "Filip Stádník" }
   ]
   
