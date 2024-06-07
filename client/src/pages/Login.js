@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { loginUser, registerUser } from '../apiService'; // Ensure correct path
+import { loginUser, registerUser } from "../apiService"; // Ensure correct path
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -13,14 +13,19 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Snackbar
+  Snackbar,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const Login = ({ setIsLoggedIn }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State to manage password visibility
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -37,7 +42,7 @@ const Login = ({ setIsLoggedIn }) => {
     try {
       await loginUser(email, password);
       setIsLoggedIn(true);
-      navigate('/'); // Navigate to main page or dashboard
+      navigate("/"); // Navigate to main page or dashboard
       setLoading(false);
     } catch (error) {
       setError("Login Failed: " + error.message);
@@ -52,14 +57,14 @@ const Login = ({ setIsLoggedIn }) => {
         userName: formData.userName,
         email: formData.email,
         password: formData.password,
-        confirmPassword: formData.confirmPassword
+        confirmPassword: formData.confirmPassword,
       };
-  
+
       // Call register function
       const registeredData = await registerUser(data);
       console.log("Registration successful", registeredData);
-  
-      navigate('/login'); 
+
+      navigate("/login");
     } catch (error) {
       console.error("Registration failed:", error.message);
       setError(error.message || "Failed to register");
@@ -72,14 +77,20 @@ const Login = ({ setIsLoggedIn }) => {
   };
 
   const handleCloseSnackbar = () => {
-    setError('');
+    setError("");
+  };
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
     <Container component="main" maxWidth="sm">
       <CssBaseline />
       <Paper elevation={6} sx={{ mt: 8, p: 4 }}>
-        <Typography component="h1" variant="h5">Sign in</Typography>
+        <Typography component="h1" variant="h5">
+          Sign in
+        </Typography>
         <Box component="form" noValidate sx={{ mt: 1 }} onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
@@ -98,10 +109,27 @@ const Login = ({ setIsLoggedIn }) => {
             required
             fullWidth
             label="Password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={handleClickShowPassword}
+                    edge="end"
+                    sx={{
+                      background: "none",
+                      padding: 0,
+                      margin: 0,
+                    }}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
           <Button
             type="submit"
@@ -113,69 +141,108 @@ const Login = ({ setIsLoggedIn }) => {
           >
             Sign In
           </Button>
-          <Button type="button" fullWidth variant="text" onClick={() => setOpen(true)}>
+          <Button
+            type="button"
+            fullWidth
+            variant="text"
+            onClick={() => setOpen(true)}
+          >
             Not registered? Sign up
           </Button>
-          </Box>
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Register</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="userName"
-            label="Username"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={formData.userName}
-            onChange={handleChange}
-          />
-        
-          <TextField
-            margin="dense"
-            name="email"
-            label="Email"
-            type="email"
-            fullWidth
-            variant="standard"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            name="password"
-            label="Password"
-            type="password"
-            fullWidth
-            variant="standard"
-            value={formData.password}
+        </Box>
+        <Dialog open={open} onClose={() => setOpen(false)}>
+          <DialogTitle>Register</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              name="userName"
+              label="Username"
+              type="text"
+              fullWidth
+              variant="standard"
+              value={formData.userName}
               onChange={handleChange}
-              />
-              <TextField
-                margin="dense"
-                name="confirmPassword"
-                label="Confirm Password"
-                type="password"
-                fullWidth
-                variant="standard"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setOpen(false)}>Cancel</Button>
-              <Button onClick={handleRegister}>Register</Button>
-            </DialogActions>
-          </Dialog>
-          <Snackbar
-            open={error !== ''}
-            autoHideDuration={6000}
-            onClose={handleCloseSnackbar}
-            message={error}
-          />
-          </Paper>
-          <Box
+            />
+
+            <TextField
+              margin="dense"
+              name="email"
+              label="Email"
+              type="email"
+              fullWidth
+              variant="standard"
+              value={formData.email}
+              onChange={handleChange}
+            />
+            <TextField
+              margin="dense"
+              name="password"
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              variant="standard"
+              value={formData.password}
+              onChange={handleChange}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                      sx={{
+                        background: "none",
+                        padding: 0,
+                        margin: 0,
+                      }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              margin="dense"
+              name="confirmPassword"
+              label="Confirm Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              variant="standard"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                      sx={{
+                        background: "none",
+                        padding: 0,
+                        margin: 0,
+                      }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpen(false)}>Cancel</Button>
+            <Button onClick={handleRegister}>Register</Button>
+          </DialogActions>
+        </Dialog>
+        <Snackbar
+          open={error !== ""}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+          message={error}
+        />
+      </Paper>
+      <Box
         sx={{
           position: "absolute",
           top: 0,
@@ -187,9 +254,8 @@ const Login = ({ setIsLoggedIn }) => {
           opacity: 0.75,
         }}
       ></Box>
-        </Container>
-      );
-    };
-    
-    export default Login;
-    
+    </Container>
+  );
+};
+
+export default Login;

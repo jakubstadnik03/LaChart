@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const zoneSchema = new mongoose.Schema({
   Easy: [String],
   lt1: [String],
   l3: [String],
   lt2: [String],
-  vo2: [String]
+  vo2: [String],
 });
 
 const athleteSchema = new mongoose.Schema({
@@ -17,7 +17,7 @@ const athleteSchema = new mongoose.Schema({
   personalBests: [String],
   injuries: [String],
   bikeZones: { type: zoneSchema, required: false },
-  runZones: { type: zoneSchema, required: false }
+  runZones: { type: zoneSchema, required: false },
 });
 
-module.exports = mongoose.model('Athlete', athleteSchema);
+module.exports = mongoose.model("Athlete", athleteSchema);
