@@ -6,7 +6,7 @@ const getAthleteById = require('../abl/athlete-abl/get-athlete-by-id');
 const updateAthlete = require('../abl/athlete-abl/update-athlete');
 const listAthletesByUser = require('../abl/athlete-abl/list-athletes-by-user');
 const verifyToken = require('../middleware/verifyToken');
-
+const ListAllAbl = require('../abl/athlete-abl/listAll-abl')
 // POST /athletes - Create a new athlete
 router.post('/', verifyToken, async (req, res) => {
   try {
@@ -16,7 +16,9 @@ router.post('/', verifyToken, async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
-
+router.get('/listByUser',verifyToken, async (req, res) => {
+  ListAllAbl(req, res);
+});
 // GET /athletes - List all athletes
 router.get('/', verifyToken, async (req, res) => {
   try {
@@ -53,14 +55,18 @@ router.put('/:id', verifyToken, async (req, res) => {
   }
 });
 
-// GET /athletes/listByUser/:userId - List athletes by user ID
-router.get('/listByUser', verifyToken, async (req, res) => {
-  try {
-    const athletes = await listAthletesByUser(req, res);
-    res.json(athletes);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+// // Express router setup
+// router.get('/listByUser', verifyToken, async (req, res) => {
+//   try {
+//     // Directly call the function without trying to send another response here.
+//     await listAthletesByUser(req, res);
+//   } catch (error) {
+//     // Error handling should also be within the ABL function, but a safeguard here is good practice.
+//     if (!res.headersSent) {
+//       res.status(500).json({ message: error.message });
+//     }
+//   }
+// });
+
 
 module.exports = router;

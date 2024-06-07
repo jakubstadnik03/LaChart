@@ -12,12 +12,12 @@ const athleteSchema = new mongoose.Schema({
   userId: { type: String, required: true },
   name: { type: String, required: true },
   age: { type: Number, required: true },
-  weight: { type: Number, required: true },
-  sport: { type: String, required: true },
+  weight: { type: Number, required: false },
+  sport: { type: String, required: false },
   personalBests: [String],
   injuries: [String],
-  bikeZones: { type: zoneSchema, required: true },
-  runZones: { type: zoneSchema, required: true }
+  bikeZones: { type: zoneSchema, required: false },
+  runZones: { type: zoneSchema, required: false }
 });
 
 module.exports = mongoose.model('Athlete', athleteSchema);

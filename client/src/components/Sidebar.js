@@ -84,16 +84,16 @@ const Sidebar = ({
           {athletes.map((athlete) => (
             <ListItem
               button
-              key={athlete.id}
+              key={athlete.name}
               onClick={() => {
-                onSelectAthlete(athlete.id);
+                onSelectAthlete(athlete._id);
                 handleDrawerToggle();
               }}
               sx={{
                 fontWeight:
-                  athlete.id === selectedAthleteId ? "bold" : "normal",
+                  athlete._id === selectedAthleteId ? "bold" : "normal",
                 color:
-                  athlete.id === selectedAthleteId ? "primary.main" : "inherit",
+                  athlete._id === selectedAthleteId ? "primary.main" : "inherit",
               }}
             >
               <ListItemText primary={athlete.name} />

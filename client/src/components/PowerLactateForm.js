@@ -26,7 +26,7 @@ import {
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const PowerLactateForm = ({ onSaveNewTesting }) => {
+const PowerLactateForm = ({ onSaveNewTesting, athleteId }) => {
   const [inputFields, setInputFields] = useState([
     { powerOrPace: "", lactate: "", heartRate: "" },
   ]);
@@ -46,7 +46,7 @@ const PowerLactateForm = ({ onSaveNewTesting }) => {
 
   const handleSaveNewTesting = () => {
     const newTesting = {
-      athleteId: 3, // This should be dynamically set based on your app's context
+      athleteId: athleteId, // This should be dynamically set based on your app's context
       date: new Date().toISOString(),
       sport,
       description,
@@ -60,7 +60,7 @@ const PowerLactateForm = ({ onSaveNewTesting }) => {
           (field) => field.powerOrPace && field.lactate && field.heartRate
         )
         .map((field) => ({
-          powerOrPace: field.powerOrPace,
+          power: field.powerOrPace,
           lactate: field.lactate,
           heartRate: field.heartRate,
         })),

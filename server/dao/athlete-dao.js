@@ -18,8 +18,8 @@ async function update(id, data) {
   return Athlete.findByIdAndUpdate(id, data, { new: true });
 }
 
-async function findByUserId(userId) {
-  return Athlete.find({ userId });
+async function listByUserId(userId) {
+  return Athlete.find({ userId: userId });
 }
 
 module.exports = {
@@ -27,5 +27,5 @@ module.exports = {
   findAll,
   findById,
   update,
-  findByUserId
+  listByUserId
 };

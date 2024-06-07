@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Button, Box, Typography, Paper, useTheme } from "@mui/material";
 import Sidebar from "../components/Sidebar"; // Adjust the import path as needed
 import ChartComponent from "../components/ChartComponent";
-import athletes from "../data/athletes.json";
-import measurements from "../data/measurements.json";
 import PowerLactateForm from "../components/PowerLactateForm";
 import BarChartComponent from "../components/BarChartComponent";
-import Login from "../components/Login";
 import AthleteProfile from "../components/AthleteProfile";
 import EditAthleteModal from "../components/EditAthleteModal";
 import { useMediaQuery } from "@mui/material";
+import { logoutUser, fetchAthletesByUser, fetchMeasurementsByAthlete, saveNewTesting } from "../apiService";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../AuthContext"; // Import AuthContext to access user information
 
 const MainPage = () => {
   const [selectedAthleteId, setSelectedAthleteId] = useState(null);
@@ -17,27 +17,49 @@ const MainPage = () => {
   const [isCreatingNewTesting, setIsCreatingNewTesting] = useState(false);
   const [selectedTestingIds, setSelectedTestingIds] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [athletes, setAthletes] = useState([]);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [currentAthlete, setCurrentAthlete] = useState(null);
   const colors = ["#8884d8", "#82ca9d", "#ffc658"];
 
+  const navigate = useNavigate();
   const selectedAthlete = athletes.find(
-    (athlete) => athlete.id === selectedAthleteId
+    (athlete) => athlete._id === selectedAthleteId
   );
   useEffect(() => {
     const foundAthlete = athletes.find(
-      (athlete) => athlete.id === selectedAthleteId
+      (athlete) => athlete._id === selectedAthleteId
     );
     setCurrentAthlete(foundAthlete);
   }, [selectedAthleteId]);
+
+  useEffect(() => {
+    fetchAthletesByUser()
+      .then(fetchedAthletes => {
+        if (JSON.stringify(fetchedAthletes) !== JSON.stringify(athletes)) {
+          setAthletes(fetchedAthletes);
+        }
+      })
+      .catch(error => {
+          console.error('Failed to fetch athletes', error);
+      });
+  }, []); 
+useEffect(() => {
+  if (!selectedAthleteId) return;
+  fetchMeasurementsByAthlete(selectedAthleteId)
+    .then(setTestingsForAthlete)
+    .catch(error => console.error('Failed to fetch measurements', error));
+}, [selectedAthleteId]);
 
   const handleEditAthlete = () => {
     console.log("Edit profile clicked");
 
     setEditModalOpen(true);
   };
+
   const handleOpenNewAthleteModal = () => {
     setCurrentAthlete({
+      _id: null,
       name: "",
       age: "",
       weight: "",
@@ -54,12 +76,11 @@ const MainPage = () => {
     setEditModalOpen(false);
     // Save athlete details to state or backend here
   };
-  const handleSignOut = () => {
-    setIsLoggedIn(false); // Simulating sign out
-    // Normally, you'd also clear session/storage data here if applicable
+  const handleSignOut = async () => {
+    setIsLoggedIn(false); 
+    await logoutUser(navigate);
   };
   const handleAddNewAthlete = () => {
-    // Handle the logic to add a new athlete (show form or modal)
     console.log("Add new athlete");
   };
 
@@ -75,17 +96,19 @@ const MainPage = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSelectTesting = (testingId) => {
-    const testing = measurements.find(
-      (measurement) => measurement.id === testingId
+    console.log(testingId);
+    const testing = testingsForAthlete.find(
+      (measurement) => measurement._id === testingId
     );
+    console.log(testing);
     if (!testing) return;
     if (selectedTestingIds.includes(testingId)) {
       setSelectedTestingIds(
-        selectedTestingIds.filter((id) => id !== testingId)
+        selectedTestingIds.filter((_id) => _id !== testingId)
       );
     } else {
-      const isIncompatible = selectedTestingIds.some((id) => {
-        const existingTest = measurements.find((m) => m.id === id);
+      const isIncompatible = selectedTestingIds.some((_id) => {
+        const existingTest = testingsForAthlete.find((m) => m._id === _id);
         return existingTest.sport !== testing.sport;
       });
       if (isIncompatible) {
@@ -96,12 +119,27 @@ const MainPage = () => {
     }
   };
 
-  const handleSaveNewTesting = (newTestingDetails) => {
-    setIsCreatingNewTesting(false);
+ 
+  const handleSaveNewTesting = async (newTestingDetails) => {
+    if (!selectedAthleteId || !newTestingDetails) {
+      alert('Please fill in all required testing details.');
+      return;
+    }
+    
+    try {
+      // Call the API service to save the new testing
+      const savedTesting = await saveNewTesting( newTestingDetails);
+      console.log('Testing saved successfully:', savedTesting);
+      setTestingsForAthlete(prev => [...prev, savedTesting]); // Update local state
+      setIsCreatingNewTesting(false); // Close form or modal
+    } catch (error) {
+      console.error('Error saving testing:', error);
+      alert('Failed to save testing data.');
+    }
   };
   useEffect(() => {
     if (selectedAthleteId) {
-      const filteredMeasurements = measurements
+      const filteredMeasurements = testingsForAthlete
         .filter((measurement) => measurement.athleteId === selectedAthleteId)
         .sort((a, b) => new Date(b.date) - new Date(a.date));
       setTestingsForAthlete(filteredMeasurements);
@@ -118,12 +156,12 @@ const MainPage = () => {
     groupedBySport[sport].sort((a, b) => new Date(b.date) - new Date(a.date));
   });
 
-  const selectedTestings = measurements.filter((measurement) =>
-    selectedTestingIds.includes(measurement.id)
+  const selectedTestings = testingsForAthlete.filter((measurement) =>
+    selectedTestingIds.includes(measurement._id)
   );
   useEffect(() => {
     if (selectedAthleteId) {
-      const relatedTestings = measurements
+      const relatedTestings = testingsForAthlete
         .filter((measurement) => measurement.athleteId === selectedAthleteId)
         .sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date descending
       setTestingsForAthlete(relatedTestings);
@@ -131,9 +169,7 @@ const MainPage = () => {
     }
     setIsCreatingNewTesting(false);
   }, [selectedAthleteId]);
-  if (!isLoggedIn) {
-    return <Login onLogin={setIsLoggedIn} />;
-  }
+  
   return (
     <>
       <Box sx={{ display: "flex", p: 3 }}>
@@ -189,21 +225,21 @@ const MainPage = () => {
                   </Typography>
                   {testings.map((testing) => (
                     <Button
-                      key={testing.id}
+                      key={testing._id}
                       variant="outlined"
                       disabled={
                         selectedTestingIds.length > 0 &&
-                        selectedTestingIds[0] !== testing.id &&
-                        measurements.find((m) => m.id === selectedTestingIds[0])
+                        selectedTestingIds[0] !== testing._id &&
+                        testingsForAthlete.find((m) => m._id === selectedTestingIds[0])
                           ?.sport !== testing.sport
                       }
                       sx={{
                         mb: 1,
                         mr: 1,
-                        bgcolor: selectedTestingIds.includes(testing.id)
+                        bgcolor: selectedTestingIds.includes(testing._id)
                           ? "primary.dark"
                           : "inherit",
-                        color: selectedTestingIds.includes(testing.id)
+                        color: selectedTestingIds.includes(testing._id)
                           ? "#fff"
                           : "inherit",
                         "&:hover": {
@@ -211,7 +247,7 @@ const MainPage = () => {
                           color: "#fff",
                         },
                       }}
-                      onClick={() => handleSelectTesting(testing.id)}
+                      onClick={() => handleSelectTesting(testing._id)}
                     >
                       {new Date(testing.date).toLocaleDateString()}
                     </Button>

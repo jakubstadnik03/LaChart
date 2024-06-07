@@ -103,49 +103,53 @@ const AthleteProfile = ({ athlete, onEdit }) => {
                 {athlete.bikeZones && (
                   <div>
                     <Typography variant="subtitle1">Bike Zones:</Typography>
-                    {Object.entries(athlete.bikeZones).map(([zone, values]) => (
-                      <Card
-                        key={zone}
-                        variant="outlined"
-                        sx={{
-                          mb: 1,
-                          p: 1,
-                          textAlign: "center",
-                          width: isMobile ? "100%" : "130px",
-                        }}
-                      >
-                        <Typography variant="body2" color="primary">
-                          {zone.toUpperCase()}
-                        </Typography>
-                        <Typography variant="caption" display="block">
-                          {formatZones(values, "bike")}
-                        </Typography>
-                      </Card>
-                    ))}
+                    {Object.entries(athlete.bikeZones)
+                      .filter(([key]) => key !== "_id")
+                      .map(([zone, values]) => (
+                        <Card
+                          key={zone}
+                          variant="outlined"
+                          sx={{
+                            mb: 1,
+                            p: 1,
+                            textAlign: "center",
+                            width: isMobile ? "100%" : "130px",
+                          }}
+                        >
+                          <Typography variant="body2" color="primary">
+                            {zone.toUpperCase()}
+                          </Typography>
+                          <Typography variant="caption" display="block">
+                            {formatZones(values, "bike")}
+                          </Typography>
+                        </Card>
+                      ))}
                   </div>
                 )}
                 {athlete.runZones && (
                   <div>
                     <Typography variant="subtitle1">Run Zones:</Typography>
-                    {Object.entries(athlete.runZones).map(([zone, values]) => (
-                      <Card
-                        key={zone}
-                        variant="outlined"
-                        sx={{
-                          mb: 1,
-                          p: 1,
-                          textAlign: "center",
-                          width: isMobile ? "100%" : "130px",
-                        }}
-                      >
-                        <Typography variant="body2" color="primary">
-                          {zone.toUpperCase()}
-                        </Typography>
-                        <Typography variant="caption" display="block">
-                          {formatZones(values, "run")}
-                        </Typography>
-                      </Card>
-                    ))}
+                    {Object.entries(athlete.runZones)
+                      .filter(([key]) => key !== "_id")
+                      .map(([zone, values]) => (
+                        <Card
+                          key={zone}
+                          variant="outlined"
+                          sx={{
+                            mb: 1,
+                            p: 1,
+                            textAlign: "center",
+                            width: isMobile ? "100%" : "130px",
+                          }}
+                        >
+                          <Typography variant="body2" color="primary">
+                            {zone.toUpperCase()}
+                          </Typography>
+                          <Typography variant="caption" display="block">
+                            {formatZones(values, "run")}
+                          </Typography>
+                        </Card>
+                      ))}
                   </div>
                 )}
               </div>

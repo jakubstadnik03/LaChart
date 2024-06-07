@@ -4,7 +4,7 @@ const measurementABL = require('../abl/measurement-abl');
 const verifyToken = require('../middleware/verifyToken');
 
 // POST /measurements - Create a new measurement
-router.post('/', verifyToken, async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const measurement = await measurementABL.createMeasurement(req.body);
     res.status(201).json(measurement);

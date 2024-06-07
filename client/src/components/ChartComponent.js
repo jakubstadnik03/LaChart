@@ -140,7 +140,7 @@ const ChartComponent = ({ testings }) => {
   const renderTestingInfo = () => {
     return testings.map((testing, index) => (
       <Accordion
-        key={index}
+        key={testing._id}
         style={{ marginTop: "-60px", marginBottom: "30px" }}
       >
         <AccordionSummary
@@ -320,7 +320,7 @@ const ChartComponent = ({ testings }) => {
               const dateOnly = testing.date.split(" ")[0];
               return (
                 <Line
-                  key={index}
+                  key={testing._id}
                   yAxisId="left"
                   type="linear"
                   dataKey={`lactate${index + 1}`}
