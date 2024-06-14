@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { loginUser, registerUser } from '../apiService'; // Ensure correct path
+import { loginUser, registerUser } from "../apiService"; // Ensure correct path
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -25,7 +25,7 @@ const Login = ({ setIsLoggedIn }) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -58,7 +58,7 @@ const Login = ({ setIsLoggedIn }) => {
         userName: formData.userName,
         email: formData.email,
         password: formData.password,
-        confirmPassword: formData.confirmPassword
+        confirmPassword: formData.confirmPassword,
       };
       const registeredData = await registerUser(data);
       console.log("Registration successful", registeredData);
@@ -79,14 +79,20 @@ const Login = ({ setIsLoggedIn }) => {
   };
 
   const handleCloseSnackbar = () => {
-    setError('');
+    setError("");
+  };
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
     <Container component="main" maxWidth="sm">
       <CssBaseline />
       <Paper elevation={6} sx={{ mt: 8, p: 4 }}>
-        <Typography component="h1" variant="h5">Sign in</Typography>
+        <Typography component="h1" variant="h5">
+          Sign in
+        </Typography>
         <Box component="form" noValidate sx={{ mt: 1 }} onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
@@ -133,7 +139,12 @@ const Login = ({ setIsLoggedIn }) => {
           >
             Sign In
           </Button>
-          <Button type="button" fullWidth variant="text" onClick={() => setOpen(true)}>
+          <Button
+            type="button"
+            fullWidth
+            variant="text"
+            onClick={() => setOpen(true)}
+          >
             Not registered? Sign up
           </Button>
         </Box>
