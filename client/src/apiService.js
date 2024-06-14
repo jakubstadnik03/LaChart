@@ -11,11 +11,11 @@ const api = axios.create({
 
 // Setup interceptors for response handling
 api.interceptors.response.use(
-  response => response,
-  error => {
+  (response) => response,
+  (error) => {
     if (error.response && error.response.status === 401) {
       // Throw an error specifically for unauthorized access
-      throw new Error('Unauthorized');
+      throw new Error("Unauthorized");
     }
     return Promise.reject(error);
   }
@@ -36,9 +36,13 @@ export const loginUser = async (email, password) => {
 
 export const logoutUser = async () => {
   try {
-    await api.post("/user/logout", {}, {
-      headers: { Authorization: `Bearer ${authToken}` }
-    });
+    await api.post(
+      "/user/logout",
+      {},
+      {
+        headers: { Authorization: `Bearer ${authToken}` },
+      }
+    );
     localStorage.removeItem("authToken");
     return true;
   } catch (error) {
@@ -53,10 +57,10 @@ export const registerUser = async (data) => {
     throw new Error("Passwords do not match.");
   }
   try {
-    const response = await api.post('/user/register', {
+    const response = await api.post("/user/register", {
       userName,
       email,
-      password
+      password,
     });
     return response.data;
   } catch (error) {
@@ -67,7 +71,7 @@ export const registerUser = async (data) => {
 export const fetchAthletesByUser = async () => {
   try {
     const response = await api.get("/athletes/listByUser/", {
-      headers: { Authorization: `Bearer ${authToken}` }
+      headers: { Authorization: `Bearer ${authToken}` },
     });
     return response.data;
   } catch (error) {
@@ -78,7 +82,7 @@ export const fetchAthletesByUser = async () => {
 export const fetchMeasurementsByAthlete = async (athleteId) => {
   try {
     const response = await api.get(`/measurements/${athleteId}`, {
-      headers: { Authorization: `Bearer ${authToken}` }
+      headers: { Authorization: `Bearer ${authToken}` },
     });
     return response.data;
   } catch (error) {
@@ -89,7 +93,7 @@ export const fetchMeasurementsByAthlete = async (athleteId) => {
 export const saveNewTesting = async (testingData) => {
   try {
     const response = await api.post("/measurements", testingData, {
-      headers: { Authorization: `Bearer ${authToken}` }
+      headers: { Authorization: `Bearer ${authToken}` },
     });
     return response.data;
   } catch (error) {
@@ -100,12 +104,12 @@ export const editTesting = async (testingId, testingData) => {
   try {
     const response = await api.put(`/measurements/${testingId}`, testingData, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('authToken')}`, // Assuming you are using token-based auth
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`, // Assuming you are using token-based auth
       },
     });
     return response.data;
   } catch (error) {
-    console.error('Failed to update testing', error);
+    console.error("Failed to update testing", error);
     throw error;
   }
 };
@@ -113,7 +117,7 @@ export const editTesting = async (testingId, testingData) => {
 export const addNewAthlete = async (athleteData) => {
   try {
     const response = await api.post("/athletes", athleteData, {
-      headers: { Authorization: `Bearer ${authToken}` }
+      headers: { Authorization: `Bearer ${authToken}` },
     });
     return response.data;
   } catch (error) {
@@ -124,7 +128,7 @@ export const addNewAthlete = async (athleteData) => {
 export const editAthlete = async (athleteId, athleteData) => {
   try {
     const response = await api.put(`/athletes/${athleteId}`, athleteData, {
-      headers: { Authorization: `Bearer ${authToken}` }
+      headers: { Authorization: `Bearer ${authToken}` },
     });
     return response.data;
   } catch (error) {
@@ -135,15 +139,11 @@ export const editAthlete = async (athleteId, athleteData) => {
 // Assuming the endpoint to delete a testing is /testing/:id
 export const deleteTesting = async (testingId) => {
   try {
-    const response = await axios.delete(`/measurements/${testingId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('authToken')}`, // Include auth token if required
-      },
+    const response = await api.delete(`/measurements/${testingId}`, {
+      headers: { Authorization: `Bearer ${authToken}` },
     });
     return response.data; // or just return to handle response elsewhere
   } catch (error) {
-    console.error('Failed to delete testing', error);
     throw error;
   }
 };
-

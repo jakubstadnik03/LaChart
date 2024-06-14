@@ -25,6 +25,16 @@ const AthleteProfile = ({ athlete, onEdit }) => {
       </Typography>
     );
   }
+  const calculateAge = (dob) => {
+    const birthday = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthday.getFullYear();
+    const m = today.getMonth() - birthday.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) {
+      age--;
+    }
+    return age;
+  };
 
   const formatZones = (zones, type) =>
     `${zones[0]} - ${zones[1]} ${type === "bike" ? "W" : "min/km"}`;
@@ -51,7 +61,7 @@ const AthleteProfile = ({ athlete, onEdit }) => {
                 <ListItem>
                   <ListItemText
                     primary="Age"
-                    secondary={`${athlete.age} years`}
+                    secondary={`${calculateAge(athlete.age)} years`}
                   />
                 </ListItem>
                 <ListItem>
@@ -113,7 +123,7 @@ const AthleteProfile = ({ athlete, onEdit }) => {
                             mb: 1,
                             p: 1,
                             textAlign: "center",
-                            width: isMobile ? "100%" : "130px",
+                            width: isMobile ? "100%" : "160px",
                           }}
                         >
                           <Typography variant="body2" color="primary">
@@ -139,7 +149,7 @@ const AthleteProfile = ({ athlete, onEdit }) => {
                             mb: 1,
                             p: 1,
                             textAlign: "center",
-                            width: isMobile ? "100%" : "130px",
+                            width: isMobile ? "100%" : "160px",
                           }}
                         >
                           <Typography variant="body2" color="primary">

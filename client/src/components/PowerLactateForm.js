@@ -23,13 +23,16 @@ import {
   InputLabel,
   Select,
 } from "@mui/material";
+import CustomTooltip from "./ChartComponent/CustomTooltip";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const PowerLactateForm = ({ onSaveNewTesting, athleteId }) => {
   const [inputFields, setInputFields] = useState([
-    { powerOrPace: "", lactate: "", heartRate: "" },
+    { power: "", lactate: "", heartRate: "" },
   ]);
+  const colors = ["#8884d8", "#82ca9d", "#ffc658"];
+
   const [sport, setSport] = useState("");
   const [description, setDescription] = useState("");
   const [indoorOutdoor, setIndoorOutdoor] = useState("");
@@ -56,11 +59,9 @@ const PowerLactateForm = ({ onSaveNewTesting, athleteId }) => {
       poolLength,
       weight,
       points: chartData
-        .filter(
-          (field) => field.powerOrPace && field.lactate && field.heartRate
-        )
+        .filter((field) => field.power && field.lactate && field.heartRate)
         .map((field) => ({
-          power: field.powerOrPace,
+          power: field.power,
           lactate: field.lactate,
           heartRate: field.heartRate,
         })),
@@ -69,10 +70,7 @@ const PowerLactateForm = ({ onSaveNewTesting, athleteId }) => {
     console.log(newTesting);
   };
   const addInputField = () => {
-    setInputFields([
-      ...inputFields,
-      { powerOrPace: "", lactate: "", heartRate: "" },
-    ]);
+    setInputFields([...inputFields, { power: "", lactate: "", heartRate: "" }]);
   };
 
   const removeInputField = (index) => {
@@ -81,28 +79,6 @@ const PowerLactateForm = ({ onSaveNewTesting, athleteId }) => {
       newInputFields.splice(index, 1);
       setInputFields(newInputFields);
     }
-  };
-
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div
-          className="custom-tooltip"
-          style={{
-            backgroundColor: "#fff",
-            padding: "5px",
-            border: "1px solid #ccc",
-          }}
-        >
-          <p>{`Power: ${data.powerOrPace} W`}</p>
-          <p>{`Lactate: ${data.lactate} mmol/L`}</p>
-          <p>{`Heart Rate: ${data.heartRate} Bpm`}</p>
-        </div>
-      );
-    }
-
-    return null;
   };
 
   const paceToSeconds = (pace) => {
@@ -121,25 +97,25 @@ const PowerLactateForm = ({ onSaveNewTesting, athleteId }) => {
   let maxPaceInSeconds = -Infinity;
 
   const chartData = inputFields.map((field, index) => {
-    let powerOrPaceValue;
+    let powerValue;
     if (sport === "run" || sport === "swim") {
-      powerOrPaceValue = paceToSeconds(field.powerOrPace);
-      minPaceInSeconds = Math.min(minPaceInSeconds, powerOrPaceValue);
-      maxPaceInSeconds = Math.max(maxPaceInSeconds, powerOrPaceValue);
+      powerValue = paceToSeconds(field.power);
+      minPaceInSeconds = Math.min(minPaceInSeconds, powerValue);
+      maxPaceInSeconds = Math.max(maxPaceInSeconds, powerValue);
     } else {
-      powerOrPaceValue = parseFloat(field.powerOrPace);
+      powerValue = parseFloat(field.power);
     }
 
     return {
       index: index + 1,
-      powerOrPace: powerOrPaceValue,
+      power: powerValue,
       lactate: parseFloat(field.lactate) || 0,
       heartRate: parseInt(field.heartRate, 10) || 0,
     };
   });
 
   if (sport === "run") {
-    chartData.sort((a, b) => a.powerOrPace - b.powerOrPace);
+    chartData.sort((a, b) => a.power - b.power);
   }
 
   const paceDomain =
@@ -161,7 +137,7 @@ const PowerLactateForm = ({ onSaveNewTesting, athleteId }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               type="number"
-              dataKey="powerOrPace"
+              dataKey="power"
               name={sport === "run" || sport === "swim" ? "Pace" : "Power"}
               unit={sport === "run" || sport === "swim" ? "/km" : "W"}
               domain={paceDomain} // Apply the calculated domain here
@@ -178,14 +154,23 @@ const PowerLactateForm = ({ onSaveNewTesting, athleteId }) => {
               name="Lactate"
               unit="mmol/L"
             />
-
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip
+              content={
+                <CustomTooltip
+                  secondsToPace={secondsToPace}
+                  colors={colors}
+                  testings={chartData}
+                  newTesting={true}
+                  sportSet={sport}
+                />
+              }
+            />
             <Legend />
             <Scatter name="Entries" data={chartData} fill="#8884d8">
               {chartData.map((entry, index) => (
                 <circle
                   key={`circle-${index}`}
-                  cx={entry.powerOrPace}
+                  cx={entry.power}
                   cy={entry.lactate}
                   r={4}
                   stroke="#8884d8"
@@ -218,9 +203,9 @@ const PowerLactateForm = ({ onSaveNewTesting, athleteId }) => {
                       : `Power ${index + 1}`
                   }
                   variant="outlined"
-                  value={input.powerOrPace}
+                  value={input.power}
                   onChange={(e) =>
-                    handleInputChange(index, "powerOrPace", e.target.value)
+                    handleInputChange(index, "power", e.target.value)
                   }
                   fullWidth
                 />

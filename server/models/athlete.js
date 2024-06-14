@@ -11,7 +11,7 @@ const zoneSchema = new mongoose.Schema({
 const athleteSchema = new mongoose.Schema({
   userId: { type: String, required: true },
   name: { type: String, required: true },
-  age: { type: Number, required: true },
+  age: { type: String, required: true },
   weight: { type: Number, required: false },
   sport: { type: String, required: false },
   personalBests: [String],

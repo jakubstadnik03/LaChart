@@ -1,30 +1,34 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Button, Box, Typography, Paper, useTheme } from "@mui/material";
 import Sidebar from "../components/Sidebar"; // Adjust the import path as needed
-import ChartComponent from "../components/ChartComponent";
+import ChartComponent from "../components/ChartComponent/ChartComponent";
 import PowerLactateForm from "../components/PowerLactateForm";
-import BarChartComponent from "../components/BarChartComponent";
-import AthleteProfile from "../components/AthleteProfile";
-import EditAthleteModal from "../components/EditAthleteModal";
+import BarChartComponent from "../components/ChartComponent/BarChartComponent";
+import AthleteProfile from "../components/Athlete/AthleteProfile";
+import EditAthleteModal from "../components/Athlete/EditAthleteModal";
 import { useMediaQuery } from "@mui/material";
-import { logoutUser, fetchAthletesByUser, fetchMeasurementsByAthlete, saveNewTesting } from "../apiService";
+import {
+  logoutUser,
+  fetchAthletesByUser,
+  fetchMeasurementsByAthlete,
+  saveNewTesting,
+} from "../apiService";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../AuthContext"; // Import AuthContext to access user information
-import TrainingZonesComponent from "../components/TrainingZonesComponent"; // Adjust the import path as needed
 
 const MainPage = () => {
-  const [selectedAthleteId, setSelectedAthleteId] = useState(localStorage.getItem('selectedAthleteId'));
-  const [selectedTestingIds, setSelectedTestingIds] = useState(
-      JSON.parse(localStorage.getItem('selectedTestingIds') || '[]')
+  const [selectedAthleteId, setSelectedAthleteId] = useState(
+    localStorage.getItem("selectedAthleteId")
   );
-    const [testingsForAthlete, setTestingsForAthlete] = useState([]);
+  const [selectedTestingIds, setSelectedTestingIds] = useState(
+    JSON.parse(localStorage.getItem("selectedTestingIds") || "[]")
+  );
+  const [testingsForAthlete, setTestingsForAthlete] = useState([]);
   const [isCreatingNewTesting, setIsCreatingNewTesting] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [athletes, setAthletes] = useState([]);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [currentAthlete, setCurrentAthlete] = useState(null);
   const colors = ["#8884d8", "#82ca9d", "#ffc658"];
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
   const selectedAthlete = athletes.find(
@@ -38,30 +42,36 @@ const MainPage = () => {
     console.log(currentAthlete);
   }, [selectedAthleteId]);
   useEffect(() => {
-    localStorage.setItem('selectedAthleteId', selectedAthleteId);
-    localStorage.setItem('selectedTestingIds', JSON.stringify(selectedTestingIds));
-}, [selectedAthleteId, selectedTestingIds]);
+    localStorage.setItem("selectedAthleteId", selectedAthleteId);
+    localStorage.setItem(
+      "selectedTestingIds",
+      JSON.stringify(selectedTestingIds)
+    );
+  }, [selectedAthleteId, selectedTestingIds]);
 
   useEffect(() => {
     fetchAthletesByUser()
       .then(setAthletes)
-      .catch(error => {
-        console.error('Failed to fetch athletes', error);
-        setError("Failed to connect. Please check your internet connection or try logging in again.");
-        navigate('/login');
+      .catch((error) => {
+        console.error("Failed to fetch athletes", error);
+        setError(
+          "Failed to connect. Please check your internet connection or try logging in again."
+        );
+        navigate("/login");
       });
   }, []);
   useEffect(() => {
     if (!selectedAthleteId) return;
     fetchMeasurementsByAthlete(selectedAthleteId)
-        .then(setTestingsForAthlete)
-        .catch(error => console.error('Failed to fetch measurements', error));
-}, [selectedAthleteId]);
-useEffect(() => {
-  const foundAthlete = athletes.find(athlete => athlete._id === selectedAthleteId);
-  setCurrentAthlete(foundAthlete);
-}, [athletes, selectedAthleteId]);
-
+      .then(setTestingsForAthlete)
+      .catch((error) => console.error("Failed to fetch measurements", error));
+  }, [selectedAthleteId]);
+  useEffect(() => {
+    const foundAthlete = athletes.find(
+      (athlete) => athlete._id === selectedAthleteId
+    );
+    setCurrentAthlete(foundAthlete);
+  }, [athletes, selectedAthleteId]);
 
   const handleEditAthlete = () => {
     console.log("Edit profile clicked");
@@ -86,15 +96,10 @@ useEffect(() => {
   const handleSaveAthlete = (athleteDetails) => {
     console.log("Athlete Saved:", athleteDetails);
     setEditModalOpen(false);
-    // Save athlete details to state or backend here
   };
   const handleSignOut = async () => {
-    setIsLoggedIn(false); 
-    navigate('/login');
+    navigate("/login");
     await logoutUser(navigate);
-  };
-  const handleAddNewAthlete = () => {
-    console.log("Add new athlete");
   };
 
   const handleCreateNewTesting = () => {
@@ -132,22 +137,21 @@ useEffect(() => {
     }
   };
 
- 
   const handleSaveNewTesting = async (newTestingDetails) => {
     if (!selectedAthleteId || !newTestingDetails) {
-      alert('Please fill in all required testing details.');
+      alert("Please fill in all required testing details.");
       return;
     }
-    
+
     try {
       // Call the API service to save the new testing
-      const savedTesting = await saveNewTesting( newTestingDetails);
-      console.log('Testing saved successfully:', savedTesting);
-      setTestingsForAthlete(prev => [...prev, savedTesting]); // Update local state
+      const savedTesting = await saveNewTesting(newTestingDetails);
+      console.log("Testing saved successfully:", savedTesting);
+      setTestingsForAthlete((prev) => [...prev, savedTesting]); // Update local state
       setIsCreatingNewTesting(false); // Close form or modal
     } catch (error) {
-      console.error('Error saving testing:', error);
-      alert('Failed to save testing data.');
+      console.error("Error saving testing:", error);
+      alert("Failed to save testing data.");
     }
   };
   useEffect(() => {
@@ -182,7 +186,7 @@ useEffect(() => {
     }
     setIsCreatingNewTesting(false);
   }, [selectedAthleteId]);
-  
+
   return (
     <>
       <Box sx={{ display: "flex", p: 3 }}>
@@ -193,7 +197,7 @@ useEffect(() => {
           onAddNewAthlete={handleOpenNewAthleteModal}
           onSignOut={handleSignOut}
         />
-        <Box sx={{ flex: 1, ml: { xs: 0, sm: 1, md: 3 } }}>
+        <Box sx={{ flex: 1 }}>
           <AthleteProfile
             athlete={selectedAthlete}
             onEdit={handleEditAthlete}
@@ -243,8 +247,9 @@ useEffect(() => {
                       disabled={
                         selectedTestingIds.length > 0 &&
                         selectedTestingIds[0] !== testing._id &&
-                        testingsForAthlete.find((m) => m._id === selectedTestingIds[0])
-                          ?.sport !== testing.sport
+                        testingsForAthlete.find(
+                          (m) => m._id === selectedTestingIds[0]
+                        )?.sport !== testing.sport
                       }
                       sx={{
                         mb: 1,
@@ -273,7 +278,7 @@ useEffect(() => {
                 variant="contained"
                 size="small"
                 onClick={() => handleCreateNewTesting()}
-                sx={{ mt: 3, height: "30px" }}
+                sx={{ mt: 3, height: "50px" }}
               >
                 New Testing
               </Button>
@@ -295,18 +300,17 @@ useEffect(() => {
                     gutterBottom
                     sx={{ m: 2, color: colors[index % colors.length] }}
                   >
-                   {!isMobile && <span> Testing Date:</span> }{new Date(testing.date).toLocaleDateString()}
+                    {!isMobile && <span> Testing Date:</span>}
+                    {new Date(testing.date).toLocaleDateString()}
                   </Typography>
                 ))}
               </div>
               <Paper elevation={3} sx={{ p: 2 }}>
                 <ChartComponent testings={selectedTestings} />
-   
 
                 {selectedTestings.length === 1 && (
                   <div>
                     <Paper elevation={3} sx={{ p: 2 }}>
-                    <TrainingZonesComponent testings={selectedTestings} />
                       <BarChartComponent testings={selectedTestings} />
                     </Paper>
                   </div>

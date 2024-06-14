@@ -1,5 +1,5 @@
 // dao/measurementDAO.js
-const Measurement = require('../models/measurement');
+const Measurement = require("../models/measurement");
 
 async function createMeasurement(measurementData) {
   const measurement = new Measurement(measurementData);
@@ -18,9 +18,7 @@ async function updateMeasurement(id, updateData) {
   return Measurement.findByIdAndUpdate(id, updateData, { new: true });
 }
 async function deleteMeasurement(id) {
-  // Assuming you're using a database like MongoDB, Sequelize or similar
-  const result = await Measurement.findByIdAndRemove(id); // Modify according to your DB API
-  return result;
+  return Measurement.findByIdAndDelete(id); // Modify according to your DB API
 }
 
 module.exports = {
@@ -28,5 +26,5 @@ module.exports = {
   getMeasurementsByAthleteId,
   getMeasurementById,
   updateMeasurement,
-  deleteMeasurement
+  deleteMeasurement,
 };
