@@ -10,17 +10,21 @@ import { useMediaQuery } from "@mui/material";
 import { logoutUser, fetchAthletesByUser, fetchMeasurementsByAthlete, saveNewTesting } from "../apiService";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthContext"; // Import AuthContext to access user information
+import TrainingZonesComponent from "../components/TrainingZonesComponent"; // Adjust the import path as needed
 
 const MainPage = () => {
-  const [selectedAthleteId, setSelectedAthleteId] = useState(null);
-  const [testingsForAthlete, setTestingsForAthlete] = useState([]);
+  const [selectedAthleteId, setSelectedAthleteId] = useState(localStorage.getItem('selectedAthleteId'));
+  const [selectedTestingIds, setSelectedTestingIds] = useState(
+      JSON.parse(localStorage.getItem('selectedTestingIds') || '[]')
+  );
+    const [testingsForAthlete, setTestingsForAthlete] = useState([]);
   const [isCreatingNewTesting, setIsCreatingNewTesting] = useState(false);
-  const [selectedTestingIds, setSelectedTestingIds] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [athletes, setAthletes] = useState([]);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [currentAthlete, setCurrentAthlete] = useState(null);
   const colors = ["#8884d8", "#82ca9d", "#ffc658"];
+  const [error, setError] = useState('');
 
   const navigate = useNavigate();
   const selectedAthlete = athletes.find(
@@ -31,25 +35,33 @@ const MainPage = () => {
       (athlete) => athlete._id === selectedAthleteId
     );
     setCurrentAthlete(foundAthlete);
+    console.log(currentAthlete);
   }, [selectedAthleteId]);
+  useEffect(() => {
+    localStorage.setItem('selectedAthleteId', selectedAthleteId);
+    localStorage.setItem('selectedTestingIds', JSON.stringify(selectedTestingIds));
+}, [selectedAthleteId, selectedTestingIds]);
 
   useEffect(() => {
     fetchAthletesByUser()
-      .then(fetchedAthletes => {
-        if (JSON.stringify(fetchedAthletes) !== JSON.stringify(athletes)) {
-          setAthletes(fetchedAthletes);
-        }
-      })
+      .then(setAthletes)
       .catch(error => {
-          console.error('Failed to fetch athletes', error);
+        console.error('Failed to fetch athletes', error);
+        setError("Failed to connect. Please check your internet connection or try logging in again.");
+        navigate('/login');
       });
-  }, []); 
-useEffect(() => {
-  if (!selectedAthleteId) return;
-  fetchMeasurementsByAthlete(selectedAthleteId)
-    .then(setTestingsForAthlete)
-    .catch(error => console.error('Failed to fetch measurements', error));
+  }, []);
+  useEffect(() => {
+    if (!selectedAthleteId) return;
+    fetchMeasurementsByAthlete(selectedAthleteId)
+        .then(setTestingsForAthlete)
+        .catch(error => console.error('Failed to fetch measurements', error));
 }, [selectedAthleteId]);
+useEffect(() => {
+  const foundAthlete = athletes.find(athlete => athlete._id === selectedAthleteId);
+  setCurrentAthlete(foundAthlete);
+}, [athletes, selectedAthleteId]);
+
 
   const handleEditAthlete = () => {
     console.log("Edit profile clicked");
@@ -78,6 +90,7 @@ useEffect(() => {
   };
   const handleSignOut = async () => {
     setIsLoggedIn(false); 
+    navigate('/login');
     await logoutUser(navigate);
   };
   const handleAddNewAthlete = () => {
@@ -282,15 +295,18 @@ useEffect(() => {
                     gutterBottom
                     sx={{ m: 2, color: colors[index % colors.length] }}
                   >
-                    Testing Date: {new Date(testing.date).toLocaleDateString()}
+                   {!isMobile && <span> Testing Date:</span> }{new Date(testing.date).toLocaleDateString()}
                   </Typography>
                 ))}
               </div>
               <Paper elevation={3} sx={{ p: 2 }}>
                 <ChartComponent testings={selectedTestings} />
+   
+
                 {selectedTestings.length === 1 && (
                   <div>
                     <Paper elevation={3} sx={{ p: 2 }}>
+                    <TrainingZonesComponent testings={selectedTestings} />
                       <BarChartComponent testings={selectedTestings} />
                     </Paper>
                   </div>

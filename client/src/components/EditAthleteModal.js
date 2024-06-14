@@ -6,6 +6,7 @@ const defaultAthlete = {
     name: '',
     age: '',
     weight: '',
+    sport: '',
     personalBests: [],
     injuries: [],
     bikeZones: {
@@ -23,9 +24,10 @@ const defaultAthlete = {
 };
 
 const EditAthleteModal = ({ athlete, open, onClose, onSave }) => {
-    const [formData, setFormData] = useState({ ...defaultAthlete });
 
+    const [formData, setFormData] = useState({ ...defaultAthlete });
     useEffect(() => {
+
         setFormData(prev => ({
             ...defaultAthlete,
             ...athlete,
@@ -81,7 +83,7 @@ const EditAthleteModal = ({ athlete, open, onClose, onSave }) => {
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md">
             <DialogTitle>{dialogTitle}</DialogTitle>
-            <DialogContent>
+            <DialogContent style={{ paddingTop: '10px' }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                         <TextField
@@ -123,7 +125,7 @@ const EditAthleteModal = ({ athlete, open, onClose, onSave }) => {
                             margin="normal"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={6} sm={3}>
                         <TextField
                             fullWidth
                             label="Injuries (comma separated)"
@@ -134,9 +136,22 @@ const EditAthleteModal = ({ athlete, open, onClose, onSave }) => {
                             margin="normal"
                         />
                     </Grid>
+                    <Grid item xs={6} sm={3}>
+                        <TextField
+                            fullWidth
+                            label="Sport "
+                            name="sport"
+                            
+                            value={formData.sport}
+                            onChange={handleChange}
+                            margin="normal"
+                        />
+                    </Grid>
                     <Grid item xs={12} sm={6}>
                         <Typography variant="subtitle1">Bike Zones (W)</Typography>
-                        {Object.keys(formData.bikeZones).map(zone => (
+                        {Object.entries(athlete.bikeZones)
+                      .filter(([key]) => key !== "_id")
+                      .map(([zone, values]) => (
                             <TextField
                                 key={zone}
                                 fullWidth
@@ -150,7 +165,9 @@ const EditAthleteModal = ({ athlete, open, onClose, onSave }) => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <Typography variant="subtitle1">Run Zones (min/km)</Typography>
-                        {Object.keys(formData.runZones).map(zone => (
+                        {Object.entries(athlete.runZones)
+                      .filter(([key]) => key !== "_id")
+                      .map(([zone, values]) => (
                             <TextField
                                 key={zone}
                                 fullWidth

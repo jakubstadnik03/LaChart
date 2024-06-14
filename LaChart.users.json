@@ -1,0 +1,44 @@
+[{
+  "_id": {
+    "$oid": "6640d9b35e4c0c5982705ebf"
+  },
+  "id": "5f8f8c44fc13ae04b7000001",
+  "userName": "jakub_stadnik",
+  "role": "user",
+  "password": "$2b$10$PWSez8wcKDbbf9EQr.ZSL.XJy0pnyKtWdJZc.TZZg7Y3TyaiFCrdu",
+  "email": "jakub.stadnik@seznam.com",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66485926117b8780e938a847"
+  },
+  "id": "50720053be614af2",
+  "userName": "jakub_stadnik",
+  "role": "user",
+  "password": "$2b$10$gvSK1XVi0w54EQvhfP4KzenmaxbNFU/VE/jQFKfmI/bbTt..0GGry",
+  "email": "jakub.stadnik@gamil.com",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "665eff4dfa34bab3352c9f04"
+  },
+  "id": "afc005feef8bf67d",
+  "userName": "jakub_stadnik",
+  "role": "user",
+  "password": "$2b$10$GFyKpyRxYvWFJ0ty40EMiueZEjoeRTiazzZfGm3kYoCgfQmF8lkDK",
+  "email": "jakub.stadnik@xy.com",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "665f00f7fa34bab3352c9f07"
+  },
+  "id": "c67cfd78ad50c012",
+  "userName": "honza_kubes",
+  "role": "user",
+  "password": "$2b$10$UyFBpob4JLU13Z5V6rcTTevlPvBa9pzBQbfmlq.2KSKtDq95/Y07S",
+  "email": "jakub.stadnik@gassmil.com",
+  "__v": 0
+}]

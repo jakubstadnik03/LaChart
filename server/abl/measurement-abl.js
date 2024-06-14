@@ -16,10 +16,14 @@ async function getMeasurementById(id) {
 async function updateMeasurement(id, updateData) {
   return measurementDAO.updateMeasurement(id, updateData);
 }
+async function deleteMeasurement(id) {
+  return measurementDAO.deleteMeasurement(id);
+}
 
 module.exports = {
   createMeasurement,
   getMeasurementsByAthleteId,
   getMeasurementById,
-  updateMeasurement
+  updateMeasurement,
+  deleteMeasurement
 };

@@ -29,7 +29,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { useTheme, useMediaQuery } from "@mui/material";
-
+import { editTesting, deleteTesting } from '../apiService';
 const ChartComponent = ({ testings }) => {
   const [chartData, setChartData] = useState([]);
   const colors = ["#8884d8", "#82ca9d", "#ffc658"];
@@ -85,6 +85,10 @@ const ChartComponent = ({ testings }) => {
     const secs = seconds % 60;
     return `${minutes}:${secs.toString().padStart(2, "0")}`;
   };
+  const paceToSeconds = pace => {
+    const [mins, secs] = pace.split(':').map(Number);
+    return mins * 60 + secs;
+  };
 
   const zoom = () => {
     if (!refAreaLeft || !refAreaRight || refAreaLeft === refAreaRight) {
@@ -124,32 +128,50 @@ const ChartComponent = ({ testings }) => {
   };
 
   const handleResetChanges = () => {
-    setChartData(originalData);
+    setChartData(originalData); // Ensure originalData is properly set when data is first loaded
   };
+
+  useEffect(() => {
+    setOriginalData(chartData); // Set original data when chartData is first loaded or changed
+  }, [chartData]);
+
 
   const handleToggleHeartRate = (event) => {
     setShowHeartRate(event.target.checked);
   };
 
+ 
   const handleValueChange = (index, field, value) => {
     const newData = [...chartData];
-    newData[index][field] = Number(value) || "";
-    setData(newData);
+    if (field === "power" && testings[0]?.sport === "run" || field === "power" && testings[0]?.sport === "swim") {
+      console.log(value);
+       newData[index][field] = value;
+      console.log(newData);
+    } else {
+      newData[index][field] = Number(value);
+    }
+    setChartData(newData);
   };
+  
+
+  
 
   const renderTestingInfo = () => {
     return testings.map((testing, index) => (
       <Accordion
         key={testing._id}
-        style={{ marginTop: "-60px", marginBottom: "30px" }}
-      >
+        style={{
+          marginTop: isMobile ? "10px" : "-60px", 
+          marginBottom: "30px",
+          zIndex:999
+        }}      >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
           <Typography sx={{ flexShrink: 0 }}>
-            Testing: {new Date(testing.date).toLocaleDateString()}
+        {!isMobile &&  <span>  Testing: </span>} {new Date(testing.date).toLocaleDateString()}
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -207,14 +229,44 @@ const ChartComponent = ({ testings }) => {
 
   const renderEditUI = testings.length === 1;
 
-  const handleSaveChanges = () => {
-    setOriginalData([...chartData]);
+  const handleDeleteTesting = async () => {
+    const testingId = testings[0]?._id;
+
+    try {
+      await deleteTesting(testingId);
+      alert('Testing deleted successfully!');
+      // Optionally, remove the testing from your state to update the UI immediately
+    } catch (error) {
+      console.error('Error deleting testing:', error);
+      alert('Failed to delete testing.');
+    }
   };
+  const handleSaveChanges = async () => {
+    const testingId = testings[0]?._id;
+    const updatedData = {
+      points: chartData.map(({ power, lactate1, heartRate1 }) => ({
+        power: testings[0]?.sport === "run" || testings[0]?.sport === "swim" && typeof power === 'string' 
+        ? paceToSeconds(power)  
+        : power,
+        lactate: Number(lactate1),
+        heartRate: Number(heartRate1)
+      }))
+    };
+    try {
+      console.log(updatedData);
+       await editTesting(testingId, updatedData);
+      alert('Testing updated successfully!');
+    } catch (error) {
+      console.error('Failed to update testing:', error);
+      alert('Failed to update testing.');
+    }
+  };
+
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const sport = testings[0]?.sport;
-      const displayPace = sport === "run";
+      const displayPace = sport === "run" || sport === "swim";
       return (
         <div
           className="custom-tooltip"
@@ -264,7 +316,7 @@ const ChartComponent = ({ testings }) => {
         <ResponsiveContainer
           width="100%"
           height={isMobile ? 300 : 400}
-          sx={{ mb: 2, p: 0 }}
+          sx={{ mb: 2, p: 0}}
         >
           <LineChart
             data={chartData}
@@ -274,7 +326,7 @@ const ChartComponent = ({ testings }) => {
             margin={
               isMobile
                 ? { top: 0, right: 0, left: 0, bottom: 5 }
-                : { top: 5, right: 30, left: 20, bottom: 5 }
+                : { top: 25, right: 30, left: 20, bottom: 5 }
             }
           >
             <CartesianGrid strokeDasharray="3 3" />
@@ -317,7 +369,7 @@ const ChartComponent = ({ testings }) => {
             <Tooltip content={<CustomTooltip />} />
             <Legend />
             {testings.map((testing, index) => {
-              const dateOnly = testing.date.split(" ")[0];
+              const dateOnly = new Date(testing.date).toLocaleDateString();
               return (
                 <Line
                   key={testing._id}
@@ -369,6 +421,15 @@ const ChartComponent = ({ testings }) => {
           <Button onClick={resetZoom} variant="contained" color="primary">
             Reset Zoom
           </Button>
+          <div
+        style={{
+          display: "flex",
+          marginTop: testings.length > 1 ? "90px" : "70px",
+          zIndex: 999
+        }}
+      >
+        {testings.length > 0 && renderTestingInfo()}
+      </div>
         </ResponsiveContainer>
 
         {renderEditUI && (
@@ -377,16 +438,36 @@ const ChartComponent = ({ testings }) => {
               sx={{
                 display: "flex",
                 justifyContent: "flex-end",
-                mb: 1,
-                mt: isLargeScreen ? -5 : 5,
+                mb: 2,
+                mt: isLargeScreen ? -4 : 5,
               }}
             >
-              <IconButton onClick={handleAddPoint} color="primary">
+                  <Button
+        color="error"
+        startIcon={<DeleteIcon />}
+        onClick={handleDeleteTesting}
+      >
+        Delete
+      </Button>
+      <IconButton onClick={handleAddPoint} color="primary">
                 <AddCircleOutlineIcon />
               </IconButton>
               <IconButton onClick={handleResetChanges} color="secondary">
                 <RestartAltIcon />
               </IconButton>
+              <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSaveChanges}
+              sx={{ alignSelf: "flex-start", mt: 0, ml: 0}}
+            >
+              Save
+            </Button>
+            
+  
+
+
+             
             </Box>
             <div style={{ marginTop: isLargeScreen ? "0px" : "0px" }}>
               {chartData.map((point, index) => {
@@ -410,12 +491,11 @@ const ChartComponent = ({ testings }) => {
                       }
                       variant="outlined"
                       value={
-                        testings[0].sport === "run"
-                          ? secondsToPace(point.power)
-                          : testings[0].sport === "swim"
-                          ? secondsToPace(point.power)
+                        testings[0]?.sport === "run" || testings[0]?.sport === "swim"
+                          ? (typeof point.power === 'number' ? secondsToPace(point.power) : point.power)
                           : point.power
                       }
+                      
                       onChange={(e) =>
                         handleValueChange(index, "power", e.target.value)
                       }
@@ -426,7 +506,7 @@ const ChartComponent = ({ testings }) => {
                       type="number"
                       value={point.lactate1}
                       onChange={(e) =>
-                        handleValueChange(index, "lactate", e.target.value)
+                        handleValueChange(index, "lactate1", e.target.value)
                       }
                     />
                     <TextField
@@ -435,7 +515,7 @@ const ChartComponent = ({ testings }) => {
                       type="number"
                       value={point.heartRate1}
                       onChange={(e) =>
-                        handleValueChange(index, "heartRate", e.target.value)
+                        handleValueChange(index, "heartRate1", e.target.value)
                       }
                     />
                     <IconButton
@@ -448,25 +528,11 @@ const ChartComponent = ({ testings }) => {
                 );
               })}
             </div>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSaveChanges}
-              sx={{ alignSelf: "flex-end", mt: 2 }}
-            >
-              Save Changes
-            </Button>
+            
           </div>
         )}
       </Box>
-      <div
-        style={{
-          display: "flex",
-          marginTop: testings.length > 1 ? "90px" : "0",
-        }}
-      >
-        {testings.length > 0 && renderTestingInfo()}
-      </div>
+      
     </>
   );
 };

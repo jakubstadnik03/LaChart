@@ -13,12 +13,17 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Snackbar
+  Snackbar,
+  IconButton,
+  InputAdornment
 } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const Login = ({ setIsLoggedIn }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [open, setOpen] = useState(false);
@@ -29,15 +34,17 @@ const Login = ({ setIsLoggedIn }) => {
     email: "",
     password: "",
     confirmPassword: "",
+    showPassword: false,
+    showConfirmPassword: false
   });
 
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent default form submission behavior
+    event.preventDefault();
     setLoading(true);
     try {
       await loginUser(email, password);
       setIsLoggedIn(true);
-      navigate('/'); // Navigate to main page or dashboard
+      navigate('/');
       setLoading(false);
     } catch (error) {
       setError("Login Failed: " + error.message);
@@ -47,28 +54,28 @@ const Login = ({ setIsLoggedIn }) => {
 
   const handleRegister = async () => {
     try {
-      // Prepare the form data object
       const data = {
         userName: formData.userName,
         email: formData.email,
         password: formData.password,
         confirmPassword: formData.confirmPassword
       };
-  
-      // Call register function
       const registeredData = await registerUser(data);
       console.log("Registration successful", registeredData);
-  
-      navigate('/login'); 
+      navigate('/login');
     } catch (error) {
       console.error("Registration failed:", error.message);
       setError(error.message || "Failed to register");
-      setOpen(true); // Open the Snackbar to show the error
+      setOpen(true);
     }
   };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleTogglePasswordVisibility = (field) => {
+    setFormData({ ...formData, [field]: !formData[field] });
   };
 
   const handleCloseSnackbar = () => {
@@ -98,10 +105,23 @@ const Login = ({ setIsLoggedIn }) => {
             required
             fullWidth
             label="Password"
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             autoComplete="current-password"
             value={password}
+            sx={{pr: 0}}
             onChange={(e) => setPassword(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end" sx={{pl: 0}}>
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
           />
           <Button
             type="submit"
@@ -116,7 +136,8 @@ const Login = ({ setIsLoggedIn }) => {
           <Button type="button" fullWidth variant="text" onClick={() => setOpen(true)}>
             Not registered? Sign up
           </Button>
-          </Box>
+        </Box>
+      </Paper>
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Register</DialogTitle>
         <DialogContent>
@@ -131,7 +152,6 @@ const Login = ({ setIsLoggedIn }) => {
             value={formData.userName}
             onChange={handleChange}
           />
-        
           <TextField
             margin="dense"
             name="email"
@@ -146,36 +166,59 @@ const Login = ({ setIsLoggedIn }) => {
             margin="dense"
             name="password"
             label="Password"
-            type="password"
+            type={formData.showPassword ? 'text' : 'password'}
             fullWidth
             variant="standard"
             value={formData.password}
-              onChange={handleChange}
-              />
-              <TextField
-                margin="dense"
-                name="confirmPassword"
-                label="Confirm Password"
-                type="password"
-                fullWidth
-                variant="standard"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setOpen(false)}>Cancel</Button>
-              <Button onClick={handleRegister}>Register</Button>
-            </DialogActions>
-          </Dialog>
-          <Snackbar
-            open={error !== ''}
-            autoHideDuration={6000}
-            onClose={handleCloseSnackbar}
-            message={error}
+            onChange={handleChange}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => handleTogglePasswordVisibility('showPassword')}
+                  >
+                    {formData.showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
           />
-          </Paper>
-          <Box
+          <TextField
+            margin="dense"
+            name="confirmPassword"
+            label="Confirm Password"
+            type={formData.showConfirmPassword ? 'text' : 'password'}
+            fullWidth
+            variant="standard"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => handleTogglePasswordVisibility('showConfirmPassword')}
+                  >
+                    {formData.showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)}>Cancel</Button>
+          <Button onClick={handleRegister}>Register</Button>
+        </DialogActions>
+      </Dialog>
+      <Snackbar
+        open={error !== ''}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        message={error}
+      />
+       <Box
         sx={{
           position: "absolute",
           top: 0,
@@ -187,9 +230,10 @@ const Login = ({ setIsLoggedIn }) => {
           opacity: 0.75,
         }}
       ></Box>
-        </Container>
-      );
-    };
-    
-    export default Login;
-    
+    </Container>
+  );
+};
+
+export default Login;
+
+         

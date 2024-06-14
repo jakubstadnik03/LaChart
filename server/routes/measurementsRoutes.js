@@ -48,5 +48,16 @@ router.put('/:id', verifyToken, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+router.delete('/:id', verifyToken, async (req, res) => {
+  try {
+    const result = await measurementABL.deleteMeasurement(req.params.id);
+    if (!result) {
+      return res.status(404).json({ message: 'Measurement not found' });
+    }
+    res.status(204).send(); // 204 No Content
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 module.exports = router;

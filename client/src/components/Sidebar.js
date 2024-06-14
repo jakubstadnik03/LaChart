@@ -44,6 +44,7 @@ const Sidebar = ({
           alignSelf: "baseline",
           position: "fixed",
           fontSize: "3rem",
+          pb: 0
         }}
       >
         <MenuIcon

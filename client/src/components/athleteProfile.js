@@ -32,7 +32,7 @@ const AthleteProfile = ({ athlete, onEdit }) => {
   return (
     <Card raised sx={{ minWidth: 275, m: 2, p: { xs: 0, md: 2 } }}>
       <Grid container spacing={2} sx={{ p: 0 }}>
-        <Grid item xs={12} md={6} sx={{ p: 0 }}>
+        <Grid item xs={12} md={6} sx={{ p: 0, pb: 0 }}>
           <CardContent sx={{ p: { xs: 0, md: 0 }, pt: 0 }}>
             <Typography
               variant="h5"

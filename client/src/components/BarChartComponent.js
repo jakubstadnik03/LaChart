@@ -16,23 +16,39 @@ const BarChartComponent = ({ testings }) => {
   const colors = ["#8884d8", "#82ca9d", "#ffc658"]; // Different colors for different bars
 
   useEffect(() => {
+    // Convert pace in min/km for running or use power for other sports
+    const convertPace = (seconds) => {
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${minutes}:${secs.toString().padStart(2, "0")}`;
+    };
+
+    // Function to handle the pace calculation for running
+   
+    const secondsToPace = (seconds) => {
+      if (testings[0]?.sport === "swim") {
+        const minutes = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${minutes}:${secs.toString().padStart(2, "0")}`;
+      }
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${minutes}:${secs.toString().padStart(2, "0")}`;
+    };
+
     let stepCounter = 1; // Initialize a step counter
     const combinedData = testings.flatMap((testing) =>
       testing.points.map((point) => {
-        const speed = Number(point.power); // Assuming 'power' field holds the speed in km/h for running
-        const secondsToPace = (speed) => {
-          const minutes = Math.floor(speed / 60);
-          const secs = speed % 60;
-          return `${minutes}:${secs.toString().padStart(2, "0")}`;
-        };
-        const pace = secondsToPace(speed);
+        let metric;
+        if (testing.sport === "run") {
+          metric = secondsToPace(point.power); // Assuming 'power' holds the speed in km/h for running
+        } else {
+          metric = (point.power / testing.weight).toFixed(2); // Use Watts per Kg for swimming or other calculations
+        }
+
         const dataPoint = {
           ...point,
-          metric:
-            testing.sport === "run"
-              ? pace
-              : (speed / testing.weight).toFixed(2),
-          power: speed,
+          metric,
           name: `Step ${stepCounter++}`, // Increment step counter for each point
         };
         return dataPoint;
@@ -54,9 +70,9 @@ const BarChartComponent = ({ testings }) => {
             border: "1px solid #ccc",
           }}
         >
-          <p style={{ color: entry.color }}>Power: {entry.payload.power} W</p>
-          <p style={{ color: entry.color }}>
-            {testings[0]?.sport === "run" ? "Pace (min/km)" : "Watts/Kg"}:{" "}
+{testings[0]?.sport === "bike"  &&         <p style={{ color: entry.color }}>Power: {entry.payload.power} W</p>
+}          <p style={{ color: entry.color }}>
+            {testings[0]?.sport === "run" ? "Pace (min/km)" : testings[0]?.sport === "swim" ? "Pace (min/100m)" : "Watts/Kg"}:{" "}
             {entry.payload.metric}
           </p>
           <p style={{ color: entry.color }}>
@@ -84,7 +100,7 @@ const BarChartComponent = ({ testings }) => {
             yAxisId="left"
             orientation="left"
             stroke="#8884d8"
-            unit={testings[0]?.sport === "run" ? "min/km" : "W/Kg"}
+            unit={testings[0]?.sport === "run" ? "min/km" : "W/kg"}
           />
           <YAxis
             yAxisId="right"
@@ -99,7 +115,7 @@ const BarChartComponent = ({ testings }) => {
             dataKey="metric"
             fill="#8884d8"
             name={
-              testings[0]?.sport === "run" ? "Pace (min/km)" : "Watts per Kg"
+              testings[0]?.sport === "run" ? "Pace (min/km)" :  testings[0]?.sport === "swim" ? "Pace (min/100m)" : "Watts per Kg"
             }
           />
           <Bar
