@@ -22,44 +22,53 @@ const ChartTestingData = ({
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
   const handleDeleteTesting = async () => {
     if (!testing || testing.length === 0) {
-      console.error("No testings available to delete.");
-      alert("No testings available to delete.");
-      return;
+        console.error("No testings available to delete.");
+        alert("No testings available to delete.");
+        return;
     }
 
     const testingId = testing[0]._id;
 
     try {
-      await deleteTesting(testingId);
-      alert("Testing deleted successfully!");
+        const response = await deleteTesting(testingId);
+        if(response.status === 200) { // Assuming the backend sends a 200 OK on successful deletion
+            alert("Testing deleted successfully!");
+           
+            setChartData(prevChartData => prevChartData.filter(t => t._id !== testingId));
+        } else {
+            throw new Error('Failed to delete the testing.');
+        }
     } catch (error) {
-      console.error("Error deleting testing:", error);
-      alert("Failed to delete testing.");
+        console.error("Error deleting testing:", error);
+        alert("Failed to delete testing.");
     }
+};
+
+
+
+const handleSaveChanges = async () => {
+  const testingId = testing[0]?._id;
+  const updatedData = {
+      points: chartData.map(({ power, lactate1, heartRate1 }) => ({
+          power: testing[0]?.sport === "run" || (testing[0]?.sport === "swim" && typeof power === "string")
+              ? paceToSeconds(power)
+              : power,
+          lactate: Number(lactate1),
+          heartRate: Number(heartRate1),
+      })),
   };
 
-  const handleSaveChanges = async () => {
-    const testingId = testing[0]?._id;
-    const updatedData = {
-      points: chartData.map(({ power, lactate1, heartRate1 }) => ({
-        power:
-          testing[0]?.sport === "run" ||
-          (testing[0]?.sport === "swim" && typeof power === "string")
-            ? paceToSeconds(power)
-            : power,
-        lactate: Number(lactate1),
-        heartRate: Number(heartRate1),
-      })),
-    };
-    try {
-      console.log(updatedData);
+  try {
       await editTesting(testingId, updatedData);
       alert("Testing updated successfully!");
-    } catch (error) {
+      // Update the chartData state to reflect the new data
+      setChartData(chartData.map(item => item._id === testingId ? updatedData : item));
+  } catch (error) {
       console.error("Failed to update testing:", error);
       alert("Failed to update testing.");
-    }
-  };
+  }
+};
+
   const removeInputField = (index) => {
     const newInputFields = [...chartData];
     newInputFields.splice(index, 1);

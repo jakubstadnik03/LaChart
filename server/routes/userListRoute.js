@@ -10,7 +10,7 @@ const { blacklistToken } = require("../middleware/authManager");
 const verifyToken = require('../middleware/verifyToken'); // Ensure this path is correct
 
 // RESTful route for getting a user by ID
-router.get("/get/:id", verifyToken, GetAbl);
+router.get("/get", verifyToken, GetAbl);
 
 // Returns a list of all users
 router.get("/", verifyToken, ListAll);

@@ -34,6 +34,17 @@ export const loginUser = async (email, password) => {
   }
 };
 
+export const getUser = async () => {
+  try {
+    const response = await api.get("/user/get", {
+      headers: { Authorization: `Bearer ${authToken}` },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const logoutUser = async () => {
   try {
     await api.post(

@@ -116,6 +116,7 @@ const ChartComponent = ({ testings }) => {
         flexDirection: { xs: "column", sm: "column", md: "row" },
         p: { xs: 0, md: 3 },
         maxWidth: "1620",
+        minHeight: "500px"
       }}
     >
       <ResponsiveContainer

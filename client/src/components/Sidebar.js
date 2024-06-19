@@ -11,20 +11,22 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from "@mui/icons-material/Menu"; // Hamburger menu icon
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"; // Logout icon
-
+import UserSettingsModal from "./UserSettingsDialogue";
 const Sidebar = ({
   athletes,
   selectedAthleteId,
   onSelectAthlete,
   onSignOut,
   onAddNewAthlete,
+  user
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
   const handleDrawerToggle = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
@@ -75,9 +77,27 @@ const Sidebar = ({
         <Typography variant="h6" sx={{ my: 2, textAlign: "center" }}>
           LaChart
         </Typography>
+        <Button onClick={() => setIsSettingsModalOpen(true)}
+        sx={{
+          mx: "auto",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+>
+    <AccountCircleIcon sx={{ mr: 1 }} /> 
+    {user?.userName}
+</Button>
+
+               <UserSettingsModal
+          open={isSettingsModalOpen}
+          onClose={() => setIsSettingsModalOpen(false)}
+          onSave={updatedUserData => console.log('Save user data', updatedUserData)}
+          userData={user}
+        />
         <Button
           onClick={onAddNewAthlete}
-          sx={{ my: 1, mx: "auto", display: "block" }}
+          sx={{ my: 0, mx: "auto", display: "block" }}
         >
           Add New Athlete
         </Button>

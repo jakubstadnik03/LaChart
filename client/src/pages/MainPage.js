@@ -12,6 +12,7 @@ import {
   fetchAthletesByUser,
   fetchMeasurementsByAthlete,
   saveNewTesting,
+  getUser
 } from "../apiService";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -29,6 +30,7 @@ const MainPage = () => {
   const [currentAthlete, setCurrentAthlete] = useState(null);
   const colors = ["#8884d8", "#82ca9d", "#ffc658"];
   const [error, setError] = useState("");
+  const [user, setUser] = useState(null);  // State to store user info
 
   const navigate = useNavigate();
   const selectedAthlete = athletes.find(
@@ -61,15 +63,28 @@ const MainPage = () => {
       });
   }, []);
   useEffect(() => {
+    getUser()
+      .then(setUser)
+      .catch((error) => {
+        console.error("Failed to fetch user", error);
+        setError(
+          "Failed to connect. Please check your internet connection or try logging in again."
+        );
+        navigate("/login");
+      });
+  }, []);
+  useEffect(() => {
     if (!selectedAthleteId) return;
     fetchMeasurementsByAthlete(selectedAthleteId)
       .then(setTestingsForAthlete)
+      
       .catch((error) => console.error("Failed to fetch measurements", error));
   }, [selectedAthleteId]);
   useEffect(() => {
     const foundAthlete = athletes.find(
       (athlete) => athlete._id === selectedAthleteId
     );
+
     setCurrentAthlete(foundAthlete);
   }, [athletes, selectedAthleteId]);
 
@@ -78,7 +93,7 @@ const MainPage = () => {
 
     setEditModalOpen(true);
   };
-
+console.log(user);
   const handleOpenNewAthleteModal = () => {
     setCurrentAthlete({
       _id: null,
@@ -196,6 +211,7 @@ const MainPage = () => {
           onSelectAthlete={setSelectedAthleteId}
           onAddNewAthlete={handleOpenNewAthleteModal}
           onSignOut={handleSignOut}
+          user={user}
         />
         <Box sx={{ flex: 1 }}>
           <AthleteProfile

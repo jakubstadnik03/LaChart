@@ -46,9 +46,7 @@ router.get("/:id", verifyToken, async (req, res) => {
 router.put("/:id", verifyToken, async (req, res) => {
   try {
     const updatedAthlete = await updateAthlete(req, res);
-    if (!updatedAthlete) {
-      return res.status(404).json({ message: "Athlete not found" });
-    }
+ 
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

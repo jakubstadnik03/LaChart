@@ -71,7 +71,7 @@ const TrainingZonesComponent = ({ testings, secondsToPace }) => {
         </AccordionSummary>
         <AccordionDetails>
           <TableContainer>
-            <Table sx={{ minWidth: 500 }} aria-label="training zones table">
+            <Table sx={{ minWidth: 300 }} aria-label="training zones table">
               <TableHead>
                 <TableRow>
                   <TableCell>
