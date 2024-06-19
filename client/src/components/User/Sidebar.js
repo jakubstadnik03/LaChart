@@ -11,7 +11,7 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu"; // Hamburger menu icon
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"; // Logout icon
 import UserSettingsModal from "./UserSettingsDialogue";
@@ -21,7 +21,7 @@ const Sidebar = ({
   onSelectAthlete,
   onSignOut,
   onAddNewAthlete,
-  user
+  user,
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -46,7 +46,7 @@ const Sidebar = ({
           alignSelf: "baseline",
           position: "fixed",
           fontSize: "3rem",
-          pb: 0
+          pb: 0,
         }}
       >
         <MenuIcon
@@ -77,22 +77,25 @@ const Sidebar = ({
         <Typography variant="h6" sx={{ my: 2, textAlign: "center" }}>
           LaChart
         </Typography>
-        <Button onClick={() => setIsSettingsModalOpen(true)}
-        sx={{
-          mx: "auto",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
->
-    <AccountCircleIcon sx={{ mr: 1 }} /> 
-    {user?.userName}
-</Button>
+        <Button
+          onClick={() => setIsSettingsModalOpen(true)}
+          sx={{
+            mx: "auto",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <AccountCircleIcon sx={{ mr: 1 }} />
+          {user?.userName}
+        </Button>
 
-               <UserSettingsModal
+        <UserSettingsModal
           open={isSettingsModalOpen}
           onClose={() => setIsSettingsModalOpen(false)}
-          onSave={updatedUserData => console.log('Save user data', updatedUserData)}
+          onSave={(updatedUserData) =>
+            console.log("Save user data", updatedUserData)
+          }
           userData={user}
         />
         <Button
@@ -114,7 +117,9 @@ const Sidebar = ({
                 fontWeight:
                   athlete._id === selectedAthleteId ? "bold" : "normal",
                 color:
-                  athlete._id === selectedAthleteId ? "primary.main" : "inherit",
+                  athlete._id === selectedAthleteId
+                    ? "primary.main"
+                    : "inherit",
               }}
             >
               <ListItemText primary={athlete.name} />

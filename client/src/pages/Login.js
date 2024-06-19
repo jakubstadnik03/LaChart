@@ -7,7 +7,6 @@ import {
   Typography,
   TextField,
   Container,
-  CssBaseline,
   Paper,
   Dialog,
   DialogActions,
@@ -15,7 +14,12 @@ import {
   DialogTitle,
   Snackbar,
   IconButton,
-  InputAdornment
+  InputAdornment,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  CssBaseline,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -35,7 +39,8 @@ const Login = ({ setIsLoggedIn }) => {
     password: "",
     confirmPassword: "",
     showPassword: false,
-    showConfirmPassword: false
+    showConfirmPassword: false,
+    role: "",
   });
 
   const handleSubmit = async (event) => {
@@ -44,7 +49,7 @@ const Login = ({ setIsLoggedIn }) => {
     try {
       await loginUser(email, password);
       setIsLoggedIn(true);
-      navigate('/');
+      navigate("/");
       setLoading(false);
     } catch (error) {
       setError("Login Failed: " + error.message);
@@ -59,10 +64,11 @@ const Login = ({ setIsLoggedIn }) => {
         email: formData.email,
         password: formData.password,
         confirmPassword: formData.confirmPassword,
+        role: formData.role,
       };
       const registeredData = await registerUser(data);
       console.log("Registration successful", registeredData);
-      navigate('/login');
+      navigate("/login");
     } catch (error) {
       console.error("Registration failed:", error.message);
       setError(error.message || "Failed to register");
@@ -111,14 +117,14 @@ const Login = ({ setIsLoggedIn }) => {
             required
             fullWidth
             label="Password"
-            type={showPassword ? 'text' : 'password'}
+            type={showPassword ? "text" : "password"}
             autoComplete="current-password"
             value={password}
-            sx={{pr: 0}}
+            sx={{ pr: 0 }}
             onChange={(e) => setPassword(e.target.value)}
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end" sx={{pl: 0}}>
+                <InputAdornment position="end" sx={{ pl: 0 }}>
                   <IconButton
                     aria-label="toggle password visibility"
                     onClick={() => setShowPassword(!showPassword)}
@@ -126,7 +132,7 @@ const Login = ({ setIsLoggedIn }) => {
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
-              )
+              ),
             }}
           />
           <Button
@@ -173,11 +179,12 @@ const Login = ({ setIsLoggedIn }) => {
             value={formData.email}
             onChange={handleChange}
           />
+
           <TextField
             margin="dense"
             name="password"
             label="Password"
-            type={formData.showPassword ? 'text' : 'password'}
+            type={formData.showPassword ? "text" : "password"}
             fullWidth
             variant="standard"
             value={formData.password}
@@ -187,19 +194,21 @@ const Login = ({ setIsLoggedIn }) => {
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={() => handleTogglePasswordVisibility('showPassword')}
+                    onClick={() =>
+                      handleTogglePasswordVisibility("showPassword")
+                    }
                   >
                     {formData.showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
-              )
+              ),
             }}
           />
           <TextField
             margin="dense"
             name="confirmPassword"
             label="Confirm Password"
-            type={formData.showConfirmPassword ? 'text' : 'password'}
+            type={formData.showConfirmPassword ? "text" : "password"}
             fullWidth
             variant="standard"
             value={formData.confirmPassword}
@@ -209,14 +218,32 @@ const Login = ({ setIsLoggedIn }) => {
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={() => handleTogglePasswordVisibility('showConfirmPassword')}
+                    onClick={() =>
+                      handleTogglePasswordVisibility("showConfirmPassword")
+                    }
                   >
-                    {formData.showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                    {formData.showConfirmPassword ? (
+                      <VisibilityOff />
+                    ) : (
+                      <Visibility />
+                    )}
                   </IconButton>
                 </InputAdornment>
-              )
+              ),
             }}
           />
+          <FormControl fullWidth margin="dense">
+            <InputLabel>Role</InputLabel>
+            <Select
+              name="role"
+              value={formData.role}
+              label="Role"
+              onChange={handleChange}
+            >
+              <MenuItem value="coach">Coach</MenuItem>
+              <MenuItem value="athlete">Athlete</MenuItem>
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
@@ -224,12 +251,12 @@ const Login = ({ setIsLoggedIn }) => {
         </DialogActions>
       </Dialog>
       <Snackbar
-        open={error !== ''}
+        open={error !== ""}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
         message={error}
       />
-       <Box
+      <Box
         sx={{
           position: "absolute",
           top: 0,
@@ -246,5 +273,3 @@ const Login = ({ setIsLoggedIn }) => {
 };
 
 export default Login;
-
-         

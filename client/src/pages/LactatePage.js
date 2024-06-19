@@ -1,9 +1,17 @@
-import React from 'react'
+import React from "react";
+import LactateForm from "../components/Lactate/LactateForm";
+import LactateChart from "../components/Lactate/LactateChart";
+import TestingTable from "../components/Lactate/TestingTable";
+import data from "../data/lactate.json";
 
-const LactatePage = () => {
+const LactatePage = ({ selectedAthleteId }) => {
   return (
-    <div>LactatePage</div>
-  )
-}
+    <>
+      <LactateForm selectedAthleteId={selectedAthleteId} />
+      <LactateChart selectedAthleteId={selectedAthleteId} datas={data} />
+      <TestingTable datas={data} selectedAthleteId={selectedAthleteId} />
+    </>
+  );
+};
 
-export default LactatePage
+export default LactatePage;

@@ -12,7 +12,8 @@ async function RegisterUserAbl(req, res) {
     !body.userName ||
     !body.email ||
     !body.password ||
-    !body.confirmPassword
+    !body.confirmPassword ||
+    !body.role
   ) {
     return res.status(400).json({
       error:
@@ -27,12 +28,12 @@ async function RegisterUserAbl(req, res) {
 
   // Initialize the user object
   let newUser = {
-    
     uuIdentity: crypto.randomBytes(8).toString("hex"),
     userName: body.userName,
     email: body.email,
     password: bcrypt.hashSync(body.password, 10),
-    role: "user",
+    role: body.role,
+    athleteId: body.athleteId,
   };
 
   // Check for duplicate emails

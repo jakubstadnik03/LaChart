@@ -1,0 +1,393 @@
+[
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-06-25T08:00:00Z",
+    "sport": "bike",
+    "effort": 15,
+    "weather": "sunny",
+    "indoorOutdoor": "outdoor",
+    "bikeType": "Cervelo S5",
+    "description": "Early morning sprint sessions, felt good.",
+    "testings": [
+      {
+        "power": 250,
+        "heartRate": 140,
+        "intervalLength": "5:00",
+        "effort": 13,
+        "lactate": 1.8
+      },
+      {
+        "power": 280,
+        "heartRate": 150,
+        "intervalLength": "5:00",
+        "effort": 13,
+        "lactate": 2
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-06-26T07:30:00Z",
+    "sport": "bike",
+    "effort": 17,
+    "weather": "rainy",
+    "indoorOutdoor": "outdoor",
+    "bikeType": "Trek Emonda",
+    "description": "Rainy day resistance training, challenging conditions.",
+    "testings": [
+      {
+        "power": 260,
+        "heartRate": 150,
+        "intervalLength": "4:30",
+        "effort": 16,
+        "lactate": 2.2
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-06-27T09:00:00Z",
+    "sport": "bike",
+    "effort": 12,
+    "weather": "cloudy",
+    "indoorOutdoor": "indoor",
+    "bikeType": "Specialized Tarmac",
+    "description": "Indoor training session, focusing on endurance.",
+    "testings": [
+      {
+        "power": 230,
+        "heartRate": 135,
+        "intervalLength": "6:00",
+        "effort": 11,
+        "lactate": 1.5
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-06-28T08:15:00Z",
+    "sport": "bike",
+    "effort": 18,
+    "weather": "windy",
+    "indoorOutdoor": "outdoor",
+    "bikeType": "Cervelo S5",
+    "description": "Windy day, high power testing.",
+    "testings": [
+      {
+        "power": 290,
+        "heartRate": 160,
+        "intervalLength": "3:45",
+        "effort": 19,
+        "lactate": 3.0
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-06-29T07:45:00Z",
+    "sport": "bike",
+    "effort": 10,
+    "weather": "partly cloudy",
+    "indoorOutdoor": "outdoor",
+    "bikeType": "Trek Emonda",
+    "description": "Moderate effort recovery ride.",
+    "testings": [
+      {
+        "power": 210,
+        "heartRate": 130,
+        "intervalLength": "7:00",
+        "effort": 7,
+        "lactate": 1.3
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-06-30T08:00:00Z",
+    "sport": "bike",
+    "effort": 16,
+    "weather": "sunny",
+    "indoorOutdoor": "outdoor",
+    "bikeType": "Specialized Tarmac",
+    "description": "High-effort hill repeats, sunny conditions.",
+    "testings": [
+      {
+        "power": 280,
+        "heartRate": 155,
+        "intervalLength": "4:15",
+        "effort": 18,
+        "lactate": 2.8
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date":
+
+ "2024-07-01T08:20:00Z",
+    "sport": "bike",
+    "effort": 14,
+    "weather": "cloudy",
+    "indoorOutdoor": "indoor",
+    "bikeType": "Cervelo S5",
+    "description": "Indoor interval training on a cloudy day.",
+    "testings": [
+      {
+        "power": 240,
+        "heartRate": 142,
+        "intervalLength": "5:30",
+        "effort": 15,
+        "lactate": 1.9
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-02T07:50:00Z",
+    "sport": "bike",
+    "effort": 12,
+    "weather": "sunny",
+    "indoorOutdoor": "outdoor",
+    "bikeType": "Trek Emonda",
+    "description": "Steady pace training in sunny weather.",
+    "testings": [
+      {
+        "power": 225,
+        "heartRate": 138,
+        "intervalLength": "6:15",
+        "effort": 12,
+        "lactate": 1.7
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-03T08:30:00Z",
+    "sport": "bike",
+    "effort": 15,
+    "weather": "rainy",
+    "indoorOutdoor": "outdoor",
+    "bikeType": "Specialized Tarmac",
+    "description": "Challenging rainy conditions, focused on power maintenance.",
+    "testings": [
+      {
+        "power": 250,
+        "heartRate": 150,
+        "intervalLength": "4:45",
+        "effort": 16,
+        "lactate": 2.3
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-04T07:25:00Z",
+    "sport": "bike",
+    "effort": 13,
+    "weather": "cloudy",
+    "indoorOutdoor": "indoor",
+    "bikeType": "Cervelo S5",
+    "description": "Indoor training session focusing on endurance.",
+    "testings": [
+      {
+        "power": 220,
+        "heartRate": 135,
+        "intervalLength": "7:30",
+        "effort": 11,
+        "lactate": 1.5
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-05T07:55:00Z",
+    "sport": "bike",
+    "effort": 17,
+    "weather": "windy",
+    "indoorOutdoor": "outdoor",
+    "bikeType": "Trek Emonda",
+    "description": "High effort testing against strong winds.",
+    "testings": [
+      {
+        "power": 270,
+        "heartRate": 160,
+        "intervalLength": "3:30",
+        "effort": 19,
+        "lactate": 3.1
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-06T08:10:00Z",
+    "sport": "bike",
+    "effort": 10,
+    "weather": "partly cloudy",
+    "indoorOutdoor": "outdoor",
+    "bikeType": "Specialized Tarmac",
+    "description": "Recovery ride with moderate intervals.",
+    "testings": [
+      {
+        "power": 200,
+        "heartRate": 120,
+        "intervalLength": "7:45",
+        "effort": 6,
+        "lactate": 1.2
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-07T08:35:00Z",
+    "sport": "bike",
+    "effort": 16,
+    "weather": "sunny",
+    "indoorOutdoor": "indoor",
+    "bikeType": "Cervelo S5",
+    "description": "Sunny day high-intensity indoor session.",
+
+
+    "testings": [
+      {
+        "power": 280,
+        "heartRate": 155,
+        "intervalLength": "4:00",
+        "effort": 18,
+        "lactate": 2.7
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-08T08:00:00Z",
+    "sport": "bike",
+    "effort": 14,
+    "weather": "cloudy",
+    "indoorOutdoor": "indoor",
+    "bikeType": "Trek Emonda",
+    "description": "Focused power session on a cloudy day.",
+    "testings": [
+      {
+        "power": 240,
+        "heartRate": 142,
+        "intervalLength": "5:15",
+        "effort": 15,
+        "lactate": 1.9
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-09T07:50:00Z",
+    "sport": "bike",
+    "effort": 12,
+    "weather": "sunny",
+    "indoorOutdoor": "outdoor",
+    "bikeType": "Specialized Tarmac",
+    "description": "Steady pace training in perfect weather conditions.",
+    "testings": [
+      {
+        "power": 225,
+        "heartRate": 138,
+        "intervalLength": "6:00",
+        "effort": 12,
+        "lactate": 1.7
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-10T08:30:00Z",
+    "sport": "bike",
+    "effort": 15,
+    "weather": "rainy",
+    "indoorOutdoor": "outdoor",
+    "bikeType": "Cervelo S5",
+    "description": "Challenging conditions with rain, focused on maintaining power.",
+    "testings": [
+      {
+        "power": 250,
+        "heartRate": 150,
+        "intervalLength": "4:45",
+        "effort": 16,
+        "lactate": 2.3
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-11T07:25:00Z",
+    "sport": "bike",
+    "effort": 13,
+    "weather": "cloudy",
+    "indoorOutdoor": "indoor",
+    "bikeType": "Trek Emonda",
+    "description": "Indoor training focusing on endurance in cloudy weather.",
+    "testings": [
+      {
+        "power": 220,
+        "heartRate": 135,
+        "intervalLength": "7:15",
+        "effort": 11,
+        "lactate": 1.5
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-12T07:55:00Z",
+    "sport": "bike",
+    "effort": 17,
+    "weather": "windy",
+    "indoorOutdoor": "outdoor",
+    "bikeType": "Specialized Tarmac",
+    "description": "High-effort testing against strong winds, very challenging.",
+    "testings": [
+      {
+        "power": 270,
+        "heartRate": 160,
+        "intervalLength": "3:15",
+        "effort": 19,
+        "lactate": 3.1
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-13T08:10:00Z",
+    "sport": "bike",
+    "effort": 10,
+    "weather": "partly cloudy",
+    "indoorOutdoor": "outdoor",
+    "bikeType": "Cervelo S5",
+    "description": "Recovery ride with moderate intervals, nice weather.",
+    "testings": [
+      {
+        "power": 200,
+        "heartRate": 120,
+        "intervalLength": "7:30",
+        "effort": 6,
+        "lactate": 1.2
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-14T08:35:00Z",
+    "sport": "bike",
+    "effort": 16,
+    "weather": "sunny",
+    "indoorOutdoor": "indoor",
+    "bikeType": "Trek Emonda",
+    "description": "Sunny day high-intensity indoor session, great effort.",
+    "testings": [
+      {
+        "power": 280,
+        "heartRate": 155,
+        "intervalLength": "3:45",
+        "effort": 18,
+        "lactate": 2.7
+      }
+    ]
+  }
+]

@@ -23,7 +23,7 @@ import {
   InputLabel,
   Select,
 } from "@mui/material";
-import CustomTooltip from "./ChartComponent/CustomTooltip";
+import CustomTooltip from "./CustomTooltip";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 

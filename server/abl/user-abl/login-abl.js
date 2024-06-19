@@ -6,7 +6,7 @@ let userDao = new UserDao();
 
 async function LoginUserAbl(req, res) {
   const { email, password } = req.body;
-console.log(req.body);
+  console.log(req.body);
   // Check if required parameters are provided
   if (!email || !password) {
     return res.status(400).json({
@@ -36,13 +36,11 @@ console.log(req.body);
     };
 
     // Generate a JWT token
-    
+
     const token = jwt.sign(payload, "yourSecretKey", { expiresIn: "1h" }); // Replace 'yourSecretKey' with a real secret key
-console.log(payload);
+    console.log(payload);
     // Send response with token
     res.status(200).json({ message: "Login successful", token });
-
-
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
