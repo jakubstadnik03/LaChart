@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -21,6 +21,7 @@ const LactateForm = ({ onSave, selectedAthleteId }) => {
   const [formData, setFormData] = useState({
     date: "",
     athleteId: selectedAthleteId,
+    sport: "bike",
     testings: [
       {
         power: "",
@@ -32,8 +33,9 @@ const LactateForm = ({ onSave, selectedAthleteId }) => {
       },
     ],
     weather: "",
-    indoorOutdoor: "",
     bikeType: "",
+    poolLength: "",
+    terrain: "",
     description: "",
   });
 
@@ -42,7 +44,7 @@ const LactateForm = ({ onSave, selectedAthleteId }) => {
     return now.toISOString().slice(0, 16);
   };
 
-  useState(() => {
+  useEffect(() => {
     setFormData((prev) => ({ ...prev, date: getCurrentDateTime() }));
   }, []);
 
@@ -102,18 +104,44 @@ const LactateForm = ({ onSave, selectedAthleteId }) => {
             onChange={handleChange}
             margin="normal"
           />
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Sport</InputLabel>
+            <Select
+              name="sport"
+              value={formData.sport}
+              label="Sport"
+              onChange={handleChange}
+            >
+              <MenuItem value="bike">Bike</MenuItem>
+              <MenuItem value="run">Run</MenuItem>
+              <MenuItem value="swim">Swim</MenuItem>
+            </Select>
+          </FormControl>
           {formData.testings.map((testing, index) => (
             <Grid container spacing={2} key={index}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Power (W)"
-                  name="power"
-                  type="number"
-                  value={testing.power}
-                  onChange={(e) => handleChange(e, index)}
-                />
-              </Grid>
+              {formData.sport === "bike" ? (
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Power (W)"
+                    name="power"
+                    type="number"
+                    value={testing.power}
+                    onChange={(e) => handleChange(e, index)}
+                  />
+                </Grid>
+              ) : (
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Pace (min/km)"
+                    name="power"
+                    type="number"
+                    value={testing.power}
+                    onChange={(e) => handleChange(e, index)}
+                  />
+                </Grid>
+              )}
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -195,26 +223,48 @@ const LactateForm = ({ onSave, selectedAthleteId }) => {
             onChange={handleChange}
             margin="normal"
           />
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Indoor/Outdoor</InputLabel>
-            <Select
-              name="indoorOutdoor"
-              value={formData.indoorOutdoor}
-              label="Indoor/Outdoor"
+          {formData.sport === "bike" && (
+            <TextField
+              fullWidth
+              label="Bike Type"
+              name="bikeType"
+              value={formData.bikeType}
               onChange={handleChange}
-            >
-              <MenuItem value="indoor">Indoor</MenuItem>
-              <MenuItem value="outdoor">Outdoor</MenuItem>
-            </Select>
-          </FormControl>
-          <TextField
-            fullWidth
-            label="Bike Type"
-            name="bikeType"
-            value={formData.bikeType}
-            onChange={handleChange}
-            margin="normal"
-          />
+              margin="normal"
+            />
+          )}
+          {formData.sport === "swim" && (
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Pool Length</InputLabel>
+              <Select
+                name="poolLength"
+                value={formData.poolLength}
+                label="Pool Length"
+                onChange={handleChange}
+              >
+                <MenuItem value="25">25m</MenuItem>
+                <MenuItem value="50">50m</MenuItem>
+                <MenuItem value="other">Other</MenuItem>
+              </Select>
+            </FormControl>
+          )}
+          {formData.sport === "run" && (
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Terrain</InputLabel>
+              <Select
+                name="terrain"
+                value={formData.terrain}
+                label="Terrain"
+                onChange={handleChange}
+              >
+                <MenuItem value="flat">Flat Road</MenuItem>
+                <MenuItem value="hilly">Hilly</MenuItem>
+                <MenuItem value="track">Track</MenuItem>
+                <MenuItem value="treadmill">Treadmill</MenuItem>
+                <MenuItem value="cross">Cross</MenuItem>
+              </Select>
+            </FormControl>
+          )}
           <TextField
             fullWidth
             label="Description"

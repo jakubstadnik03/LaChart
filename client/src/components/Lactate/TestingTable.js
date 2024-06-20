@@ -16,10 +16,8 @@ import {
   Typography,
   TablePagination,
   useTheme,
-  Grid,
 } from "@mui/material";
 
-// Helper function to sort data
 const getComparator = (order, orderBy) => {
   return order === "desc"
     ? (a, b) => (b[orderBy] < a[orderBy] ? -1 : 1)
@@ -71,6 +69,12 @@ const TestingTable = ({ datas, selectedAthleteId }) => {
     page * rowsPerPage + rowsPerPage
   );
 
+  const formatPace = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}/km`;
+  };
+
   return (
     <Box sx={{ p: 2, mt: 2 }}>
       <Typography variant="h6" gutterBottom>
@@ -108,7 +112,9 @@ const TestingTable = ({ datas, selectedAthleteId }) => {
                   direction={orderBy === "power" ? order : "asc"}
                   onClick={() => handleRequestSort("power")}
                 >
-                  Power (W)
+                  {paginatedData[0]?.sport === "bike"
+                    ? "Power (W)"
+                    : "Pace (min/km)"}
                 </TableSortLabel>
               </TableCell>
               <TableCell>Heart Rate (bpm)</TableCell>
@@ -131,9 +137,17 @@ const TestingTable = ({ datas, selectedAthleteId }) => {
                   Lactate (mmol/L)
                 </TableSortLabel>
               </TableCell>
+              <TableCell>Sport</TableCell>
               <TableCell>Weather</TableCell>
-              <TableCell>Indoor/Outdoor</TableCell>
-              <TableCell>Bike Type</TableCell>
+              {paginatedData[0]?.sport === "bike" && (
+                <TableCell>Bike Type</TableCell>
+              )}
+              {paginatedData[0]?.sport === "swim" && (
+                <TableCell>Pool Length</TableCell>
+              )}
+              {paginatedData[0]?.sport === "run" && (
+                <TableCell>Terrain</TableCell>
+              )}
               <TableCell>Description</TableCell>
             </TableRow>
           </TableHead>
@@ -147,7 +161,11 @@ const TestingTable = ({ datas, selectedAthleteId }) => {
                         {new Date(testing.date).toLocaleDateString()}
                       </TableCell>
                     )}
-                    <TableCell>{measurement.power}</TableCell>
+                    <TableCell>
+                      {testing.sport === "bike"
+                        ? measurement.power
+                        : formatPace(measurement.power)}
+                    </TableCell>
                     <TableCell>{measurement.heartRate}</TableCell>
                     <TableCell>{measurement.intervalLength}</TableCell>
                     <TableCell>{measurement.effort}</TableCell>
@@ -155,14 +173,26 @@ const TestingTable = ({ datas, selectedAthleteId }) => {
                     {index === 0 && (
                       <>
                         <TableCell rowSpan={testing.testings.length}>
+                          {testing.sport}
+                        </TableCell>
+                        <TableCell rowSpan={testing.testings.length}>
                           {testing.weather}
                         </TableCell>
-                        <TableCell rowSpan={testing.testings.length}>
-                          {testing.indoorOutdoor}
-                        </TableCell>
-                        <TableCell rowSpan={testing.testings.length}>
-                          {testing.bikeType}
-                        </TableCell>
+                        {testing.sport === "bike" && (
+                          <TableCell rowSpan={testing.testings.length}>
+                            {testing.bikeType}
+                          </TableCell>
+                        )}
+                        {testing.sport === "swim" && (
+                          <TableCell rowSpan={testing.testings.length}>
+                            {testing.poolLength}
+                          </TableCell>
+                        )}
+                        {testing.sport === "run" && (
+                          <TableCell rowSpan={testing.testings.length}>
+                            {testing.terrain}
+                          </TableCell>
+                        )}
                         <TableCell rowSpan={testing.testings.length}>
                           {testing.description}
                         </TableCell>

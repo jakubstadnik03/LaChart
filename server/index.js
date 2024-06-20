@@ -23,10 +23,12 @@ mongoose
 const athletesRoutes = require("./routes/athletesRoutes");
 const measurementsRoutes = require("./routes/measurementsRoutes");
 const userListRoute = require("./routes/userListRoute");
+const lactateRoute = require("./routes/lactateRoute");
 // Routes Middleware
 app.use("/athletes", athletesRoutes);
 app.use("/measurements", measurementsRoutes);
 app.use("/user", userListRoute);
+app.use("/lactate", lactateRoute);
 
 // Base Route
 app.get("/", (req, res) => {

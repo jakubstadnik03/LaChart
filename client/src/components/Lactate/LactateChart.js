@@ -8,27 +8,30 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  Brush,
 } from "recharts";
-import { Paper, Typography } from "@mui/material";
+import { Paper, Typography, Button, Box } from "@mui/material";
 
-import { Button, Box } from "@mui/material";
 const LactateChart = ({ datas, selectedAthleteId }) => {
   const data = datas.filter(
     (measurement) => measurement.athleteId === selectedAthleteId
   );
   const flattenMeasurements = (data) => {
     return data.reduce((acc, test) => {
-      const { date, testings } = test;
+      const { date, testings, sport } = test;
       const formattedMeasurements = testings.map((measurement) => ({
         ...measurement,
         date,
+        sport,
       }));
       return acc.concat(formattedMeasurements);
     }, []);
   };
 
   const [filter, setFilter] = useState("all");
+  const [sportFilter, setSportFilter] = useState("bike");
   const [flattenedData, setFlattenedData] = useState([]);
+  const dateFormatter = (tick) => new Date(tick).toLocaleDateString();
 
   useEffect(() => {
     setFlattenedData(flattenMeasurements(data));
@@ -43,9 +46,10 @@ const LactateChart = ({ datas, selectedAthleteId }) => {
       case "high":
         return item.lactate > 4;
       default:
-        return true;
+        return item.sport === sportFilter;
     }
   });
+
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
@@ -56,10 +60,8 @@ const LactateChart = ({ datas, selectedAthleteId }) => {
             data.date
           ).toLocaleDateString()}`}</Typography>
           <Typography variant="body1">{`Power: ${data.power} W`}</Typography>
-
           <Typography variant="body1">{`Heart Rate: ${data.heartRate} bpm`}</Typography>
           <Typography variant="body1">{`Lactate: ${data.lactate} mmol/L`}</Typography>
-
           <Typography variant="body1">{`Interval Length: ${data.intervalLength}`}</Typography>
           <Typography variant="body1">{`Effort: ${data.effort}`}</Typography>
         </Paper>
@@ -69,19 +71,42 @@ const LactateChart = ({ datas, selectedAthleteId }) => {
     return null;
   };
 
+  const renderXAxis = () => {
+    if (sportFilter === "bike") {
+      return <XAxis dataKey="power" name="Power" unit="W" />;
+    }
+    return <XAxis dataKey="pace" name="Pace" />;
+  };
+
+  const calculatePace = (power) => {
+    const minutes = Math.floor(power / 60);
+    const seconds = power % 60;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+
+  const enhancedData = filteredData.map((item) => ({
+    ...item,
+    pace: calculatePace(item.power),
+  }));
+
   return (
     <Box>
-      <Box>
+      <Box sx={{ mb: 2 }}>
         <Button onClick={() => setFilter("all")}>All</Button>
         <Button onClick={() => setFilter("low")}>Lactate ≤ 2</Button>
         <Button onClick={() => setFilter("medium")}>Lactate 2-4</Button>
         <Button onClick={() => setFilter("high")}>Lactate {">"} 4</Button>
       </Box>
+      <Box sx={{ mb: 2 }}>
+        <Button onClick={() => setSportFilter("bike")}>Bike</Button>
+        <Button onClick={() => setSportFilter("run")}>Run</Button>
+        <Button onClick={() => setSportFilter("swim")}>Swim</Button>
+      </Box>
       <ResponsiveContainer width="100%" height={400}>
         <LineChart
           width={500}
           height={300}
-          data={filteredData}
+          data={enhancedData}
           margin={{
             top: 5,
             right: 30,
@@ -90,8 +115,7 @@ const LactateChart = ({ datas, selectedAthleteId }) => {
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="power" name="Power" unit="W" />
-
+          {renderXAxis()}
           <YAxis unit="mmol" yAxisId="left" />
           <YAxis
             unit="bpm"
@@ -114,6 +138,15 @@ const LactateChart = ({ datas, selectedAthleteId }) => {
             yAxisId="right"
             dataKey="heartRate"
             stroke="#ffc658"
+          />
+          <Brush
+            dataKey="date"
+            height={30}
+            stroke="#8884d8"
+            travellerWidth={10}
+            startIndex={0}
+            endIndex={enhancedData.length - 1}
+            tickFormatter={dateFormatter}
           />
         </LineChart>
       </ResponsiveContainer>

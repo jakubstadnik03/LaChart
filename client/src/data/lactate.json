@@ -389,5 +389,366 @@
         "lactate": 2.7
       }
     ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-14T08:35:00Z",
+    "sport": "bike",
+    "effort": 16,
+    "weather": "sunny",
+    "indoorOutdoor": "indoor",
+    "bikeType": "Trek Emonda",
+    "description": "Sunny day high-intensity indoor session, great effort.",
+    "testings": [
+      {
+        "power": 280,
+        "heartRate": 155,
+        "intervalLength": "3:45",
+        "effort": 18,
+        "lactate": 2.7
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-15T07:20:00Z",
+    "sport": "run",
+    "effort": 12,
+    "weather": "cloudy",
+    "indoorOutdoor": "outdoor",
+    "description": "Morning run, steady pace.",
+    "testings": [
+      {
+        "power": 300,
+        "heartRate": 145,
+        "intervalLength": "5:00",
+        "effort": 14,
+        "lactate": 1.5
+      },
+      {
+        "power": 320,
+        "heartRate": 150,
+        "intervalLength": "5:00",
+        "effort": 16,
+        "lactate": 1.8
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-16T06:50:00Z",
+    "sport": "swim",
+    "effort": 18,
+    "weather": "indoor",
+    "indoorOutdoor": "indoor",
+    "description": "Swimming intervals at the pool.",
+    "testings": [
+      {
+        "power": 500,
+        "heartRate": 130,
+        "intervalLength": "2:30",
+        "effort": 17,
+        "lactate": 2.1
+      },
+      {
+        "power": 550,
+        "heartRate": 135,
+        "intervalLength": "2:30",
+        "effort": 19,
+        "lactate": 2.3
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-17T09:00:00Z",
+    "sport": "bike",
+    "effort": 14,
+    "weather": "sunny",
+    "indoorOutdoor": "outdoor",
+    "bikeType": "Specialized Allez",
+    "description": "Outdoor bike session with sprints.",
+    "testings": [
+      {
+        "power": 260,
+        "heartRate": 150,
+        "intervalLength": "4:00",
+        "effort": 15,
+        "lactate": 1.9
+      },
+      {
+        "power": 290,
+        "heartRate": 160,
+        "intervalLength": "4:00",
+        "effort": 17,
+        "lactate": 2.2
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-18T08:00:00Z",
+    "sport": "run",
+    "effort": 15,
+    "weather": "sunny",
+    "indoorOutdoor": "outdoor",
+    "description": "Tempo run, great weather.",
+    "testings": [
+      {
+        "power": 340,
+        "heartRate": 155,
+        "intervalLength": "4:30",
+        "effort": 15,
+        "lactate": 2.0
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-19T06:45:00Z",
+    "sport": "swim",
+    "effort": 16,
+    "weather": "indoor",
+    "indoorOutdoor": "indoor",
+    "description": "Intense swim workout with intervals.",
+    "testings": [
+      {
+        "power": 530,
+        "heartRate": 140,
+        "intervalLength": "3:00",
+        "effort": 18,
+        "lactate": 2.5
+      },
+      {
+        "power": 560,
+        "heartRate": 145,
+        "intervalLength": "3:00",
+        "effort": 19,
+        "lactate": 2.8
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-20T07:30:00Z",
+    "sport": "bike",
+    "effort": 17,
+    "weather": "cloudy",
+    "indoorOutdoor": "indoor",
+    "bikeType": "Cervelo S5",
+    "description": "Indoor cycling with intervals.",
+    "testings": [
+      {
+        "power": 275,
+        "heartRate": 150,
+        "intervalLength": "4:00",
+        "effort": 18,
+        "lactate": 2.1
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-21T07:00:00Z",
+    "sport": "run",
+    "effort": 13,
+    "weather": "cloudy",
+    "indoorOutdoor": "outdoor",
+    "description": "Easy morning run.",
+    "testings": [
+      {
+        "power": 300,
+        "heartRate": 140,
+        "intervalLength": "5:00",
+        "effort": 12,
+        "lactate": 1.6
+      },
+      {
+        "power": 320,
+        "heartRate": 145,
+        "intervalLength": "5:00",
+        "effort": 13,
+        "lactate": 1.9
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-22T08:15:00Z",
+    "sport": "swim",
+    "effort": 19,
+    "weather": "indoor",
+    "indoorOutdoor": "indoor",
+    "description": "Morning swim, high intensity.",
+    "testings": [
+      {
+        "power": 550,
+        "heartRate": 150,
+        "intervalLength": "3:00",
+        "effort": 18,
+        "lactate": 2.6
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-23T06:30:00Z",
+    "sport": "bike",
+    "effort": 18,
+    "weather": "sunny",
+    "indoorOutdoor": "outdoor",
+    "bikeType": "Giant TCR",
+    "description": "Outdoor ride, high effort intervals.",
+    "testings": [
+      {
+        "power": 295,
+        "heartRate": 160,
+        "intervalLength": "5:00",
+        "effort": 19,
+        "lactate": 2.9
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-24T08:00:00Z",
+    "sport": "run",
+    "effort": 16,
+    "weather": "cloudy",
+    "indoorOutdoor": "outdoor",
+    "description": "Long run, moderate pace.",
+    "testings": [
+      {
+        "power": 310,
+        "heartRate": 150,
+        "intervalLength": "6:00",
+        "effort": 15,
+        "lactate": 2.2
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-25T07:45:00Z",
+    "sport": "swim",
+    "effort": 17,
+    "weather": "indoor",
+    "indoorOutdoor": "indoor",
+    "description": "Swim session, multiple intervals.",
+    "testings": [
+      {
+        "power": 510,
+        "heartRate": 135,
+        "intervalLength": "2:45",
+        "effort": 17,
+        "lactate": 2.4
+      },
+      {
+        "power": 540,
+        "heartRate": 140,
+        "intervalLength": "2:45",
+        "effort": 18,
+        "lactate": 2.6
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-26T08:30:00Z",
+    "sport": "bike",
+    "effort": 14,
+    "weather": "sunny",
+    "indoorOutdoor": "indoor",
+    "bikeType": "Pinarello Dogma",
+    "description": "Indoor cycling with high-intensity efforts.",
+    "testings": [
+      {
+        "power": 270,
+        "heartRate": 148,
+        "intervalLength": "4:00",
+        "effort": 16,
+        "lactate": 2.0
+      },
+      {
+        "power": 300,
+        "heartRate": 155,
+        "intervalLength": "4:00",
+        "effort": 17,
+        "lactate": 2.3
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-27T06:45:00Z",
+    "sport": "run",
+    "effort": 18,
+    "weather": "cloudy",
+    "indoorOutdoor": "outdoor",
+    "description": "High-intensity interval run.",
+    "testings": [
+      {
+        "power": 330,
+        "heartRate": 160,
+        "intervalLength": "4:30",
+        "effort": 19,
+        "lactate": 3.0
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-28T07:50:00Z",
+    "sport": "swim",
+    "effort": 15,
+    "weather": "indoor",
+    "indoorOutdoor": "indoor",
+    "description": "Morning swim session.",
+    "testings": [
+      {
+        "power": 520,
+        "heartRate": 138,
+        "intervalLength": "3:00",
+        "effort": 16,
+        "lactate": 2.1
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-29T07:10:00Z",
+    "sport": "bike",
+    "effort": 15,
+    "weather": "cloudy",
+    "indoorOutdoor": "outdoor",
+    "bikeType": "Cannondale Synapse",
+    "description": "Steady outdoor ride.",
+    "testings": [
+      {
+        "power": 260,
+        "heartRate": 145,
+        "intervalLength": "5:00",
+        "effort": 15,
+        "lactate": 1.7
+      }
+    ]
+  },
+  {
+    "athleteId": "6662fd23b6f42f5f97024628",
+    "date": "2024-07-30T06:40:00Z",
+    "sport": "run",
+    "effort": 17,
+    "weather": "sunny",
+    "indoorOutdoor": "outdoor",
+    "description": "Morning run with intervals.",
+    "testings": [
+      {
+        "power": 310,
+        "heartRate": 150,
+        "intervalLength": "4:30",
+        "effort": 17,
+        "lactate": 2.5
+      }
+    ]
   }
 ]
