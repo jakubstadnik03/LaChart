@@ -18,6 +18,7 @@ const defaultAthlete = {
   sport: "",
   personalBests: [],
   injuries: [],
+  coachId: "",
   bikeZones: {
     lt1: ["", ""],
     l3: ["", ""],
@@ -156,6 +157,16 @@ const EditAthleteModal = ({ athlete, open, onClose, onSave }) => {
               label="Sport "
               name="sport"
               value={formData.sport}
+              onChange={handleChange}
+              margin="normal"
+            />
+          </Grid>
+          <Grid item xs={12} sm={12}>
+            <TextField
+              fullWidth
+              label="CoachId "
+              name="coachId"
+              value={formData.coachId}
               onChange={handleChange}
               margin="normal"
             />

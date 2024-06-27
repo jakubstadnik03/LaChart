@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import { createLactate } from "../../apiService";
 
 const LactateForm = ({ onSave, selectedAthleteId }) => {
   const [formData, setFormData] = useState({
@@ -26,8 +27,8 @@ const LactateForm = ({ onSave, selectedAthleteId }) => {
       {
         power: "",
         heartRate: "",
-        minutes: "", // Default 4 minutes
-        seconds: "", // Default 30 seconds
+        pace: "", // Single field for pace in mm:ss format
+        measurementType: "time", // New field to choose between time or distance
         effort: 10,
         lactate: "",
       },
@@ -37,6 +38,8 @@ const LactateForm = ({ onSave, selectedAthleteId }) => {
     poolLength: "",
     terrain: "",
     description: "",
+    weather: "",
+    indoorOutdoor: "",
   });
 
   const getCurrentDateTime = () => {
@@ -53,6 +56,15 @@ const LactateForm = ({ onSave, selectedAthleteId }) => {
     if (typeof index === "number") {
       let newTestings = [...formData.testings];
       newTestings[index][name] = value;
+
+      // Convert pace to seconds if sport is run or swim
+      if (formData.sport === "run" || formData.sport === "swim") {
+        if (name === "pace") {
+          const [minutes, seconds] = value.split(":").map(Number);
+          newTestings[index].power = minutes * 60 + seconds;
+        }
+      }
+
       setFormData((prev) => ({ ...prev, testings: newTestings }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
@@ -63,8 +75,8 @@ const LactateForm = ({ onSave, selectedAthleteId }) => {
     let newTesting = {
       power: "",
       heartRate: "",
-      minutes: "",
-      seconds: "",
+      pace: "",
+      measurementType: "time",
       effort: 10,
       lactate: "",
     };
@@ -82,9 +94,15 @@ const LactateForm = ({ onSave, selectedAthleteId }) => {
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    onSave(formData);
+    try {
+      await createLactate(formData);
+      window.location.reload(); // Reload the page after successful creation
+    } catch (error) {
+      console.error("Failed to create lactate data", error);
+      // Handle the error appropriately here, e.g., showing an error message to the user
+    }
   };
 
   return (
@@ -134,10 +152,9 @@ const LactateForm = ({ onSave, selectedAthleteId }) => {
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
-                    label="Pace (min/km)"
-                    name="power"
-                    type="number"
-                    value={testing.power}
+                    label="Pace (mm:ss)"
+                    name="pace"
+                    value={testing.pace}
                     onChange={(e) => handleChange(e, index)}
                   />
                 </Grid>
@@ -152,26 +169,55 @@ const LactateForm = ({ onSave, selectedAthleteId }) => {
                   onChange={(e) => handleChange(e, index)}
                 />
               </Grid>
-              <Grid item xs={6} sm={3}>
-                <TextField
-                  fullWidth
-                  label="Minutes"
-                  name="minutes"
-                  type="number"
-                  value={testing.minutes}
-                  onChange={(e) => handleChange(e, index)}
-                />
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <InputLabel>Measurement Type</InputLabel>
+                  <Select
+                    name="measurementType"
+                    value={testing.measurementType}
+                    label="Measurement Type"
+                    onChange={(e) => handleChange(e, index)}
+                  >
+                    <MenuItem value="time">Time</MenuItem>
+                    <MenuItem value="distance">Distance</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
-              <Grid item xs={6} sm={3}>
-                <TextField
-                  fullWidth
-                  label="Seconds"
-                  name="seconds"
-                  type="number"
-                  value={testing.seconds}
-                  onChange={(e) => handleChange(e, index)}
-                />
-              </Grid>
+              {testing.measurementType === "time" ? (
+                <>
+                  <Grid item xs={6} sm={3}>
+                    <TextField
+                      fullWidth
+                      label="Minutes"
+                      name="minutes"
+                      type="number"
+                      value={testing.minutes}
+                      onChange={(e) => handleChange(e, index)}
+                    />
+                  </Grid>
+                  <Grid item xs={6} sm={3}>
+                    <TextField
+                      fullWidth
+                      label="Seconds"
+                      name="seconds"
+                      type="number"
+                      value={testing.seconds}
+                      onChange={(e) => handleChange(e, index)}
+                    />
+                  </Grid>
+                </>
+              ) : (
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Distance (km)"
+                    name="distance"
+                    type="number"
+                    value={testing.distance}
+                    onChange={(e) => handleChange(e, index)}
+                  />
+                </Grid>
+              )}
               <Grid item xs={12} sm={6}>
                 <Typography gutterBottom>Effort (1-20)</Typography>
                 <Slider

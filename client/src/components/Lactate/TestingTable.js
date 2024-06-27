@@ -69,10 +69,14 @@ const TestingTable = ({ datas, selectedAthleteId }) => {
     page * rowsPerPage + rowsPerPage
   );
 
+  const formatIntervalLength = (minutes = "0", seconds = "0") => {
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+
   const formatPace = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}/km`;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")} /km`;
   };
 
   return (
@@ -113,7 +117,7 @@ const TestingTable = ({ datas, selectedAthleteId }) => {
                   onClick={() => handleRequestSort("power")}
                 >
                   {paginatedData[0]?.sport === "bike"
-                    ? "Power (W)"
+                    ? "Pace"
                     : "Pace (min/km)"}
                 </TableSortLabel>
               </TableCell>
@@ -163,11 +167,19 @@ const TestingTable = ({ datas, selectedAthleteId }) => {
                     )}
                     <TableCell>
                       {testing.sport === "bike"
-                        ? measurement.power
+                        ? `${measurement.power} W`
                         : formatPace(measurement.power)}
                     </TableCell>
                     <TableCell>{measurement.heartRate}</TableCell>
-                    <TableCell>{measurement.intervalLength}</TableCell>
+                    <TableCell>
+                      {measurement.minutes !== "" &&
+                        formatIntervalLength(
+                          measurement.minutes,
+                          measurement.seconds
+                        )}
+                      {measurement.minutes == "" &&
+                        `${measurement.distance} km`}
+                    </TableCell>
                     <TableCell>{measurement.effort}</TableCell>
                     <TableCell>{measurement.lactate}</TableCell>
                     {index === 0 && (

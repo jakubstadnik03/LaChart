@@ -10,14 +10,15 @@ const LactateSchema = new Schema({
   poolLength: { type: String },
   terrain: { type: String },
   description: { type: String },
-  effort: { type: Number, required: true },
   weather: { type: String },
   indoorOutdoor: { type: String },
   testings: [
     {
       power: { type: Number, required: true },
       heartRate: { type: Number, required: true },
-      intervalLength: { type: String, required: true },
+      minutes: { type: String, required: false },
+      seconds: { type: String, required: false },
+      distance: { type: String, required: false },
       effort: { type: Number, required: true },
       lactate: { type: Number, required: true },
     },

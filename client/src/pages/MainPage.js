@@ -1,13 +1,17 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Box, Typography, Paper, useTheme } from "@mui/material";
 import AthleteProfile from "../components/Athlete/AthleteProfile";
 import EditAthleteModal from "../components/Athlete/EditAthleteModal";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "../components/User/Sidebar";
-import { logoutUser, fetchAthletesByUser, getUser } from "../apiService";
+import {
+  logoutUser,
+  fetchAthletesByUser,
+  fetchAthletesByCoach,
+  getUser,
+} from "../apiService";
 import TestingPage from "./TestingPage";
 import LactatePage from "./LactatePage";
-import LactateChart from "../components/Lactate/LactateChart";
 
 const MainPage = () => {
   const [athletes, setAthletes] = useState([]);
@@ -27,17 +31,37 @@ const MainPage = () => {
   const selectedAthlete = athletes.find(
     (athlete) => athlete._id === selectedAthleteId
   );
+
   useEffect(() => {
-    fetchAthletesByUser()
-      .then(setAthletes)
-      .catch((error) => {
+    const fetchAthletes = async () => {
+      try {
+        let fetchedAthletes = [];
+        if (user?.role === "coach") {
+          fetchedAthletes = await fetchAthletesByCoach();
+        } else {
+          fetchedAthletes = await fetchAthletesByUser();
+        }
+
+        setAthletes(fetchedAthletes);
+
+        if (user?.role === "athlete" && fetchedAthletes.length === 0) {
+          handleOpenNewAthleteModal();
+          setEditModalOpen(true);
+        }
+      } catch (error) {
         console.error("Failed to fetch athletes", error);
         setError(
           "Failed to connect. Please check your internet connection or try logging in again."
         );
         navigate("/login");
-      });
-  }, []);
+      }
+    };
+
+    if (user) {
+      fetchAthletes();
+    }
+  }, [user, navigate]);
+
   useEffect(() => {
     getUser()
       .then(setUser)
@@ -48,14 +72,14 @@ const MainPage = () => {
         );
         navigate("/login");
       });
-  }, []);
+  }, [navigate]);
+
   useEffect(() => {
     const foundAthlete = athletes.find(
       (athlete) => athlete._id === selectedAthleteId
     );
     setCurrentAthlete(foundAthlete);
-    console.log(currentAthlete);
-  }, [selectedAthleteId]);
+  }, [selectedAthleteId, athletes]);
 
   const handleSignOut = async () => {
     navigate("/login");
@@ -84,6 +108,7 @@ const MainPage = () => {
     console.log("Athlete Saved:", athleteDetails);
     setEditModalOpen(false);
   };
+
   return (
     <>
       <Box sx={{ display: "flex", p: 3 }}>

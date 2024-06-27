@@ -13,9 +13,10 @@ import {
 import { Paper, Typography, Button, Box } from "@mui/material";
 
 const LactateChart = ({ datas, selectedAthleteId }) => {
-  const data = datas.filter(
-    (measurement) => measurement.athleteId === selectedAthleteId
-  );
+  const data = datas
+    .filter((measurement) => measurement.athleteId === selectedAthleteId)
+    .sort((a, b) => new Date(a.date) - new Date(b.date)); // Sort by date from oldest to newest
+
   const flattenMeasurements = (data) => {
     return data.reduce((acc, test) => {
       const { date, testings, sport } = test;
@@ -35,7 +36,7 @@ const LactateChart = ({ datas, selectedAthleteId }) => {
 
   useEffect(() => {
     setFlattenedData(flattenMeasurements(data));
-  }, [datas]);
+  }, [datas, selectedAthleteId]);
 
   const filteredData = flattenedData.filter((item) => {
     switch (filter) {
@@ -50,7 +51,15 @@ const LactateChart = ({ datas, selectedAthleteId }) => {
     }
   });
 
-  const CustomTooltip = ({ active, payload, label }) => {
+  const formatIntervalLength = (minutes, seconds) => {
+    if (seconds) {
+      return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+    } else {
+      return `${minutes}:00`;
+    }
+  };
+
+  const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
 
@@ -62,7 +71,16 @@ const LactateChart = ({ datas, selectedAthleteId }) => {
           <Typography variant="body1">{`Power: ${data.power} W`}</Typography>
           <Typography variant="body1">{`Heart Rate: ${data.heartRate} bpm`}</Typography>
           <Typography variant="body1">{`Lactate: ${data.lactate} mmol/L`}</Typography>
-          <Typography variant="body1">{`Interval Length: ${data.intervalLength}`}</Typography>
+          {data.minutes !== "" && (
+            <Typography variant="body1">{`Interval Length: ${formatIntervalLength(
+              data.minutes,
+              data.seconds
+            )}`}</Typography>
+          )}
+          {data.minutes == "" && (
+            <Typography variant="body1">{`Interval Length: ${data.distance} km `}</Typography>
+          )}
+
           <Typography variant="body1">{`Effort: ${data.effort}`}</Typography>
         </Paper>
       );
@@ -116,7 +134,7 @@ const LactateChart = ({ datas, selectedAthleteId }) => {
         >
           <CartesianGrid strokeDasharray="3 3" />
           {renderXAxis()}
-          <YAxis unit="mmol" yAxisId="left" />
+          <YAxis unit="mmol" yAxisId="left" orientation="right" />
           <YAxis
             unit="bpm"
             yAxisId="right"

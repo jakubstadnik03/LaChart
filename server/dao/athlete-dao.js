@@ -1,5 +1,5 @@
 // athleteDAO.js
-const Athlete = require('../models/athlete');
+const Athlete = require("../models/athlete");
 
 async function create(data) {
   const athlete = new Athlete(data);
@@ -21,11 +21,15 @@ async function update(id, data) {
 async function listByUserId(userId) {
   return Athlete.find({ userId: userId });
 }
+async function listByCoachId(userId) {
+  return Athlete.find({ coachId: userId });
+}
 
 module.exports = {
   create,
   findAll,
   findById,
   update,
-  listByUserId
+  listByUserId,
+  listByCoachId,
 };

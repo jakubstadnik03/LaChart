@@ -93,169 +93,183 @@ const Login = ({ setIsLoggedIn }) => {
   };
 
   return (
-    <Container component="main" maxWidth="sm">
-      <CssBaseline />
-      <Paper elevation={6} sx={{ mt: 8, p: 4 }}>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <Box component="form" noValidate sx={{ mt: 1 }} onSubmit={handleSubmit}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            label="Email Address"
-            autoComplete="email"
-            autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            label="Password"
-            type={showPassword ? "text" : "password"}
-            autoComplete="current-password"
-            value={password}
-            sx={{ pr: 0 }}
-            onChange={(e) => setPassword(e.target.value)}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end" sx={{ pl: 0 }}>
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            sx={{ mt: 3, mb: 2 }}
-            disabled={loading}
-          >
-            Sign In
-          </Button>
-          <Button
-            type="button"
-            fullWidth
-            variant="text"
-            onClick={() => setOpen(true)}
-          >
-            Not registered? Sign up
-          </Button>
-        </Box>
-      </Paper>
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Register</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="userName"
-            label="Username"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={formData.userName}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            name="email"
-            label="Email"
-            type="email"
-            fullWidth
-            variant="standard"
-            value={formData.email}
-            onChange={handleChange}
-          />
+    <>
+      <Container component="main" maxWidth="sm" sx={{ position: "relative" }}>
+        <CssBaseline />
 
-          <TextField
-            margin="dense"
-            name="password"
-            label="Password"
-            type={formData.showPassword ? "text" : "password"}
-            fullWidth
-            variant="standard"
-            value={formData.password}
-            onChange={handleChange}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() =>
-                      handleTogglePasswordVisibility("showPassword")
-                    }
-                  >
-                    {formData.showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-          <TextField
-            margin="dense"
-            name="confirmPassword"
-            label="Confirm Password"
-            type={formData.showConfirmPassword ? "text" : "password"}
-            fullWidth
-            variant="standard"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() =>
-                      handleTogglePasswordVisibility("showConfirmPassword")
-                    }
-                  >
-                    {formData.showConfirmPassword ? (
-                      <VisibilityOff />
-                    ) : (
-                      <Visibility />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-          <FormControl fullWidth margin="dense">
-            <InputLabel>Role</InputLabel>
-            <Select
-              name="role"
-              value={formData.role}
-              label="Role"
-              onChange={handleChange}
+        <Paper
+          elevation={6}
+          sx={{ mt: 20, p: 4, position: "relative", zIndex: 1 }}
+        >
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <Box
+            component="form"
+            noValidate
+            sx={{ mt: 1 }}
+            onSubmit={handleSubmit}
+          >
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              label="Email Address"
+              autoComplete="email"
+              autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
+              value={password}
+              sx={{ pr: 0 }}
+              onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end" sx={{ pl: 0 }}>
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ mt: 3, mb: 2 }}
+              disabled={loading}
             >
-              <MenuItem value="coach">Coach</MenuItem>
-              <MenuItem value="athlete">Athlete</MenuItem>
-            </Select>
-          </FormControl>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={handleRegister}>Register</Button>
-        </DialogActions>
-      </Dialog>
-      <Snackbar
-        open={error !== ""}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        message={error}
-      />
+              Sign In
+            </Button>
+            <Button
+              type="button"
+              fullWidth
+              variant="text"
+              onClick={() => setOpen(true)}
+            >
+              Not registered? Sign up
+            </Button>
+          </Box>
+        </Paper>
+        <Dialog open={open} onClose={() => setOpen(false)}>
+          <DialogTitle>Register</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              name="userName"
+              label="Username"
+              type="text"
+              fullWidth
+              variant="standard"
+              value={formData.userName}
+              onChange={handleChange}
+            />
+            <TextField
+              margin="dense"
+              name="email"
+              label="Email"
+              type="email"
+              fullWidth
+              variant="standard"
+              value={formData.email}
+              onChange={handleChange}
+            />
+            <TextField
+              margin="dense"
+              name="password"
+              label="Password"
+              type={formData.showPassword ? "text" : "password"}
+              fullWidth
+              variant="standard"
+              value={formData.password}
+              onChange={handleChange}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() =>
+                        handleTogglePasswordVisibility("showPassword")
+                      }
+                    >
+                      {formData.showPassword ? (
+                        <VisibilityOff />
+                      ) : (
+                        <Visibility />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              margin="dense"
+              name="confirmPassword"
+              label="Confirm Password"
+              type={formData.showConfirmPassword ? "text" : "password"}
+              fullWidth
+              variant="standard"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() =>
+                        handleTogglePasswordVisibility("showConfirmPassword")
+                      }
+                    >
+                      {formData.showConfirmPassword ? (
+                        <VisibilityOff />
+                      ) : (
+                        <Visibility />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <FormControl fullWidth margin="dense">
+              <InputLabel>Role</InputLabel>
+              <Select
+                name="role"
+                value={formData.role}
+                label="Role"
+                onChange={handleChange}
+              >
+                <MenuItem value="coach">Coach</MenuItem>
+                <MenuItem value="athlete">Athlete</MenuItem>
+              </Select>
+            </FormControl>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpen(false)}>Cancel</Button>
+            <Button onClick={handleRegister}>Register</Button>
+          </DialogActions>
+        </Dialog>
+        <Snackbar
+          open={error !== ""}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+          message={error}
+        />
+      </Container>
       <Box
         sx={{
           position: "absolute",
@@ -266,9 +280,24 @@ const Login = ({ setIsLoggedIn }) => {
           background: "linear-gradient(45deg, #93A5CF 30%, #E4EfE9 90%)",
           zIndex: -1,
           opacity: 0.75,
+          animation: "backgroundAnimation 10s infinite alternate",
+          backgroundSize: "200% 200%",
         }}
       ></Box>
-    </Container>
+      <style jsx="true">{`
+        @keyframes backgroundAnimation {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+      `}</style>
+    </>
   );
 };
 

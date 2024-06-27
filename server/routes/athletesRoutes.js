@@ -7,6 +7,7 @@ const updateAthlete = require("../abl/athlete-abl/update-athlete");
 const listAthletesByUser = require("../abl/athlete-abl/list-athletes-by-user");
 const verifyToken = require("../middleware/verifyToken");
 const ListAllAbl = require("../abl/athlete-abl/listAll-abl");
+const ListAllCoachAbl = require("../abl/athlete-abl/listAllCoach-abl");
 // POST /athletes - Create a new athlete
 router.post("/", verifyToken, async (req, res) => {
   try {
@@ -18,6 +19,9 @@ router.post("/", verifyToken, async (req, res) => {
 });
 router.get("/listByUser", verifyToken, async (req, res) => {
   ListAllAbl(req, res);
+});
+router.get("/listByCoach", verifyToken, async (req, res) => {
+  ListAllCoachAbl(req, res);
 });
 // GET /athletes - List all athletes
 router.get("/", verifyToken, async (req, res) => {
@@ -46,7 +50,6 @@ router.get("/:id", verifyToken, async (req, res) => {
 router.put("/:id", verifyToken, async (req, res) => {
   try {
     const updatedAthlete = await updateAthlete(req, res);
- 
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

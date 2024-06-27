@@ -63,7 +63,7 @@ export const logoutUser = async () => {
 };
 
 export const registerUser = async (data) => {
-  const { userName, email, password, confirmPassword } = data;
+  const { userName, email, password, confirmPassword, role } = data;
   if (password !== confirmPassword) {
     throw new Error("Passwords do not match.");
   }
@@ -72,6 +72,8 @@ export const registerUser = async (data) => {
       userName,
       email,
       password,
+      role,
+      confirmPassword,
     });
     return response.data;
   } catch (error) {
@@ -82,6 +84,16 @@ export const registerUser = async (data) => {
 export const fetchAthletesByUser = async () => {
   try {
     const response = await api.get("/athletes/listByUser/", {
+      headers: { Authorization: `Bearer ${authToken}` },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const fetchAthletesByCoach = async () => {
+  try {
+    const response = await api.get("/athletes/listByCoach/", {
       headers: { Authorization: `Bearer ${authToken}` },
     });
     return response.data;
@@ -154,6 +166,28 @@ export const deleteTesting = async (testingId) => {
       headers: { Authorization: `Bearer ${authToken}` },
     });
     return response.data; // or just return to handle response elsewhere
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Assuming the endpoint to delete a testing is /testing/:id
+export const listlactates = async (selectedAthleteId) => {
+  try {
+    const response = await api.get(`/lactate/athlete/${selectedAthleteId}`, {
+      headers: { Authorization: `Bearer ${authToken}` },
+    });
+    return response.data; // or just return to handle response elsewhere
+  } catch (error) {
+    throw error;
+  }
+};
+export const createLactate = async (lactateData) => {
+  try {
+    const response = await api.post(`/lactate`, lactateData, {
+      headers: { Authorization: `Bearer ${authToken}` },
+    });
+    return response.data;
   } catch (error) {
     throw error;
   }

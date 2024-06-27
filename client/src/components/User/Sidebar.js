@@ -74,9 +74,11 @@ const Sidebar = ({
         onClose={handleDrawerToggle}
         anchor="left"
       >
-        <Typography variant="h6" sx={{ my: 2, textAlign: "center" }}>
+        <Typography variant="h6" sx={{ my: 2, textAlign: "center", mt: 3 }}>
           LaChart
         </Typography>
+        <hr className="MuiDivider-root MuiDivider-fullWidth css-1b008ma-MuiDivider-root" />
+
         <Button
           onClick={() => setIsSettingsModalOpen(true)}
           sx={{
@@ -98,12 +100,15 @@ const Sidebar = ({
           }
           userData={user}
         />
-        <Button
-          onClick={onAddNewAthlete}
-          sx={{ my: 0, mx: "auto", display: "block" }}
-        >
-          Add New Athlete
-        </Button>
+        {user?.role !== "athlete" && (
+          <Button
+            onClick={onAddNewAthlete}
+            sx={{ my: 0, mx: "auto", display: "block" }}
+          >
+            Add Athlete
+          </Button>
+        )}
+        <hr className="MuiDivider-root MuiDivider-fullWidth css-1b008ma-MuiDivider-root" />
         <List>
           {athletes.map((athlete) => (
             <ListItem

@@ -53,11 +53,9 @@ const TestingPage = ({
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSelectTesting = (testingId) => {
-    console.log(testingId);
     const testing = testingsForAthlete.find(
       (measurement) => measurement._id === testingId
     );
-    console.log(testing);
     if (!testing) return;
     if (selectedTestingIds.includes(testingId)) {
       setSelectedTestingIds(
