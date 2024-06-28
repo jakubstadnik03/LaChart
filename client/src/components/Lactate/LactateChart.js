@@ -134,7 +134,7 @@ const LactateChart = ({ datas, selectedAthleteId }) => {
         >
           <CartesianGrid strokeDasharray="3 3" />
           {renderXAxis()}
-          <YAxis unit="mmol" yAxisId="left" orientation="right" />
+          <YAxis unit="mmol" yAxisId="left" orientation="left" />
           <YAxis
             unit="bpm"
             yAxisId="right"

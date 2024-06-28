@@ -8,7 +8,10 @@ import { Button, Box } from "@mui/material";
 const LactatePage = ({ selectedAthleteId }) => {
   const [lactates, setLactates] = useState([]);
   const [error, setError] = useState("");
-  const [showForm, setShowForm] = useState(true);
+  const [showForm, setShowForm] = useState(() => {
+    const savedState = localStorage.getItem("showForm");
+    return savedState !== null ? JSON.parse(savedState) : true;
+  });
 
   useEffect(() => {
     listlactates(selectedAthleteId)
@@ -24,7 +27,11 @@ const LactatePage = ({ selectedAthleteId }) => {
   }, [selectedAthleteId]);
 
   const toggleFormVisibility = () => {
-    setShowForm((prev) => !prev);
+    setShowForm((prev) => {
+      const newState = !prev;
+      localStorage.setItem("showForm", JSON.stringify(newState));
+      return newState;
+    });
   };
 
   return (

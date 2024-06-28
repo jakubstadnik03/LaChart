@@ -15,71 +15,98 @@ const TestingPage = ({
   const [selectedTestingIds, setSelectedTestingIds] = useState(
     JSON.parse(localStorage.getItem("selectedTestingIds") || "[]")
   );
+  const [selectedTestings, setSelectedTestings] = useState(
+    JSON.parse(localStorage.getItem("selectedTestings") || "[]")
+  );
   const [testingsForAthlete, setTestingsForAthlete] = useState([]);
-  const [isCreatingNewTesting, setIsCreatingNewTesting] = useState(false);
+  const [isCreatingNewTesting, setIsCreatingNewTesting] = useState(
+    JSON.parse(localStorage.getItem("isCreatingNewTesting")) || false
+  );
   const colors = ["#8884d8", "#82ca9d", "#ffc658"];
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   useEffect(() => {
     localStorage.setItem("selectedAthleteId", selectedAthleteId);
+  }, [selectedAthleteId]);
+  useEffect(() => {
     localStorage.setItem(
       "selectedTestingIds",
       JSON.stringify(selectedTestingIds)
     );
-  }, [selectedAthleteId, selectedTestingIds]);
+  }, [selectedTestingIds]);
+
+  useEffect(() => {
+    localStorage.setItem("selectedTestings", JSON.stringify(selectedTestings));
+    setSelectedTestingIds(selectedTestings.map((testId) => testId._id));
+  }, [selectedTestings]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "isCreatingNewTesting",
+      JSON.stringify(isCreatingNewTesting)
+    );
+  }, [isCreatingNewTesting]);
 
   useEffect(() => {
     if (!selectedAthleteId) return;
     fetchMeasurementsByAthlete(selectedAthleteId)
-      .then(setTestingsForAthlete)
-
+      .then((data) => {
+        setTestingsForAthlete(data);
+        const selectedTestingsData = data.filter((measurement) =>
+          selectedTestingIds.includes(measurement._id)
+        );
+        setSelectedTestings(selectedTestingsData);
+      })
       .catch((error) => console.error("Failed to fetch measurements", error));
   }, [selectedAthleteId]);
+
   useEffect(() => {
     const foundAthlete = athletes.find(
       (athlete) => athlete._id === selectedAthleteId
     );
-
     setCurrentAthlete(foundAthlete);
   }, [athletes, selectedAthleteId]);
 
   const handleCreateNewTesting = () => {
-    if (isCreatingNewTesting === true) {
-      setIsCreatingNewTesting(false);
-    } else {
-      setIsCreatingNewTesting(true);
-    }
+    setIsCreatingNewTesting((prev) => !prev);
   };
-  const theme = useTheme();
-
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSelectTesting = (testingId) => {
     const testing = testingsForAthlete.find(
       (measurement) => measurement._id === testingId
     );
     if (!testing) return;
-    if (selectedTestingIds.includes(testingId)) {
-      setSelectedTestingIds(
-        selectedTestingIds.filter((_id) => _id !== testingId)
-      );
-    } else {
-      const isIncompatible = selectedTestingIds.some((_id) => {
+    setSelectedTestingIds((prev) => {
+      const newSelectedTestingIds = prev.includes(testingId)
+        ? prev.filter((_id) => _id !== testingId)
+        : [...prev, testingId];
+
+      const isIncompatible = newSelectedTestingIds.some((_id) => {
         const existingTest = testingsForAthlete.find((m) => m._id === _id);
         return existingTest.sport !== testing.sport;
       });
       if (isIncompatible) {
         alert("Cannot select tests from different sports!");
-        return;
+        return prev;
       }
-      setSelectedTestingIds([...selectedTestingIds, testingId]);
-    }
+
+      const newSelectedTestings = testingsForAthlete.filter((measurement) =>
+        newSelectedTestingIds.includes(measurement._id)
+      );
+      setSelectedTestings(newSelectedTestings);
+      localStorage.setItem(
+        "selectedTestingIds",
+        JSON.stringify(newSelectedTestingIds)
+      );
+      localStorage.setItem(
+        "selectedTestings",
+        JSON.stringify(newSelectedTestings)
+      );
+      return newSelectedTestingIds;
+    });
   };
-  useEffect(() => {
-    localStorage.setItem("selectedAthleteId", selectedAthleteId);
-    localStorage.setItem(
-      "selectedTestingIds",
-      JSON.stringify(selectedTestingIds)
-    );
-  }, [selectedAthleteId, selectedTestingIds]);
 
   const handleSaveNewTesting = async (newTestingDetails) => {
     if (!selectedAthleteId || !newTestingDetails) {
@@ -98,6 +125,8 @@ const TestingPage = ({
       alert("Failed to save testing data.");
     }
   };
+
+  // Clear selected testings for new athlete
   useEffect(() => {
     if (selectedAthleteId) {
       const filteredMeasurements = testingsForAthlete
@@ -105,6 +134,7 @@ const TestingPage = ({
         .sort((a, b) => new Date(b.date) - new Date(a.date));
       setTestingsForAthlete(filteredMeasurements);
       setSelectedTestingIds([]);
+      setSelectedTestings([]);
     }
   }, [selectedAthleteId]);
 
@@ -116,20 +146,6 @@ const TestingPage = ({
   Object.keys(groupedBySport).forEach((sport) => {
     groupedBySport[sport].sort((a, b) => new Date(b.date) - new Date(a.date));
   });
-
-  const selectedTestings = testingsForAthlete.filter((measurement) =>
-    selectedTestingIds.includes(measurement._id)
-  );
-  useEffect(() => {
-    if (selectedAthleteId) {
-      const relatedTestings = testingsForAthlete
-        .filter((measurement) => measurement.athleteId === selectedAthleteId)
-        .sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date descending
-      setTestingsForAthlete(relatedTestings);
-      setSelectedTestingIds([]); // Reset the selected testings for the new athlete
-    }
-    setIsCreatingNewTesting(false);
-  }, [selectedAthleteId]);
 
   return (
     <>
@@ -237,7 +253,6 @@ const TestingPage = ({
           </div>
           <Paper elevation={3} sx={{ p: 2 }}>
             <ChartComponent testings={selectedTestings} />
-
             {selectedTestings.length === 1 && (
               <div>
                 <Paper elevation={3} sx={{ p: 2 }}>

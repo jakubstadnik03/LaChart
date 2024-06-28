@@ -22,11 +22,16 @@ const MainPage = () => {
   const [selectedAthleteId, setSelectedAthleteId] = useState(
     localStorage.getItem("selectedAthleteId")
   );
-  const [showComponent, setShowComponent] = useState("");
+  const [showComponent, setShowComponent] = useState(
+    localStorage.getItem("showComponent") || ""
+  );
 
   const handleToggleComponent = (componentName) => {
-    setShowComponent((prev) => (prev === componentName ? "" : componentName));
+    const newComponent = showComponent === componentName ? "" : componentName;
+    setShowComponent(newComponent);
+    localStorage.setItem("showComponent", newComponent);
   };
+
   const navigate = useNavigate();
   const selectedAthlete = athletes.find(
     (athlete) => athlete._id === selectedAthleteId
@@ -115,7 +120,10 @@ const MainPage = () => {
         <Sidebar
           athletes={athletes}
           selectedAthleteId={selectedAthleteId}
-          onSelectAthlete={setSelectedAthleteId}
+          onSelectAthlete={(id) => {
+            setSelectedAthleteId(id);
+            localStorage.setItem("selectedAthleteId", id);
+          }}
           onAddNewAthlete={handleOpenNewAthleteModal}
           onSignOut={handleSignOut}
           user={user}

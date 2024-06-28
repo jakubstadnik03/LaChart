@@ -192,3 +192,23 @@ export const createLactate = async (lactateData) => {
     throw error;
   }
 };
+export const deleteLactateTesting = async (lactateId) => {
+  try {
+    const response = await api.delete(`/lactate/${lactateId}`, {
+      headers: { Authorization: `Bearer ${authToken}` },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const updateLactateTesting = async (lactateId, lactateData) => {
+  try {
+    const response = await api.put(`/lactate/${lactateId}`, lactateData, {
+      headers: { Authorization: `Bearer ${authToken}` },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

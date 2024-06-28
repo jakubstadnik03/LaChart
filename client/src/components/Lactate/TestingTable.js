@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -15,8 +15,13 @@ import {
   Box,
   Typography,
   TablePagination,
+  IconButton,
   useTheme,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { deleteLactateTesting, updateLactateTesting } from "../../apiService";
+import EditLactateModal from "./EditLactateModal";
 
 const getComparator = (order, orderBy) => {
   return order === "desc"
@@ -24,16 +29,22 @@ const getComparator = (order, orderBy) => {
     : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1);
 };
 
-const TestingTable = ({ datas, selectedAthleteId }) => {
-  const data = datas.filter(
-    (measurement) => measurement.athleteId === selectedAthleteId
-  );
+const TestingTable = ({ datas, selectedAthleteId, setLactates }) => {
+  const [data, setData] = useState([]);
   const theme = useTheme();
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("date");
   const [filter, setFilter] = useState("all");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [currentLactate, setCurrentLactate] = useState(null);
+
+  useEffect(() => {
+    setData(
+      datas.filter((measurement) => measurement.athleteId === selectedAthleteId)
+    );
+  }, [datas, selectedAthleteId]);
 
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -48,6 +59,34 @@ const TestingTable = ({ datas, selectedAthleteId }) => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const handleEdit = (testing, index) => {
+    console.log(testing);
+    setCurrentLactate({ ...testing, index });
+    setOpenEditModal(true);
+  };
+
+  const handleDelete = async (testing, index) => {
+    if (window.confirm("Are you sure you want to delete this testing?")) {
+      try {
+        console.log(testing._id);
+        await deleteLactateTesting(testing._id); // Implement this API call in your apiService
+        // Refresh the data after deletion
+        const updatedData = data
+          .map((d) => {
+            if (d._id === testing._id) {
+              const updatedTestings = d.testings.filter((t, i) => i !== index);
+              return { ...d, testings: updatedTestings };
+            }
+            return d;
+          })
+          .filter((d) => d.testings.length > 0); // Remove entries with no testings
+        setData(updatedData); // Update state with the filtered data
+      } catch (error) {
+        console.error("Failed to delete testing", error);
+      }
+    }
   };
 
   const filteredData = data.filter((item) => {
@@ -116,9 +155,7 @@ const TestingTable = ({ datas, selectedAthleteId }) => {
                   direction={orderBy === "power" ? order : "asc"}
                   onClick={() => handleRequestSort("power")}
                 >
-                  {paginatedData[0]?.sport === "bike"
-                    ? "Pace"
-                    : "Pace (min/km)"}
+                  Pace / Power
                 </TableSortLabel>
               </TableCell>
               <TableCell>Heart Rate (bpm)</TableCell>
@@ -141,7 +178,15 @@ const TestingTable = ({ datas, selectedAthleteId }) => {
                   Lactate (mmol/L)
                 </TableSortLabel>
               </TableCell>
-              <TableCell>Sport</TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === "sport"}
+                  direction={orderBy === "sport" ? order : "asc"}
+                  onClick={() => handleRequestSort("sport")}
+                >
+                  Sport
+                </TableSortLabel>
+              </TableCell>
               <TableCell>Weather</TableCell>
               {paginatedData[0]?.sport === "bike" && (
                 <TableCell>Bike Type</TableCell>
@@ -153,6 +198,7 @@ const TestingTable = ({ datas, selectedAthleteId }) => {
                 <TableCell>Terrain</TableCell>
               )}
               <TableCell>Description</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -210,6 +256,20 @@ const TestingTable = ({ datas, selectedAthleteId }) => {
                         </TableCell>
                       </>
                     )}
+                    <TableCell>
+                      <IconButton
+                        onClick={() => handleEdit(testing, index)}
+                        color="primary"
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleDelete(testing, index)}
+                        color="secondary"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
                   </TableRow>
                 ))}
               </React.Fragment>
@@ -226,6 +286,13 @@ const TestingTable = ({ datas, selectedAthleteId }) => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </TableContainer>
+      {currentLactate && (
+        <EditLactateModal
+          open={openEditModal}
+          onClose={() => setOpenEditModal(false)}
+          lactateData={currentLactate}
+        />
+      )}
     </Box>
   );
 };
