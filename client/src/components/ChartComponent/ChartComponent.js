@@ -1,5 +1,6 @@
 // ChartComponent.js
 import React, { useState, useEffect } from "react";
+import GeneratePDF from "./GeneratePDF";
 import {
   LineChart,
   Line,
@@ -18,7 +19,7 @@ import { useTheme, useMediaQuery } from "@mui/material";
 import ChartTestingData from "./ChartTestingData";
 import TrainingZonesComponent from "./TrainingZonesComponent";
 
-const ChartComponent = ({ testings }) => {
+const ChartComponent = ({ testings, athletes }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [refAreaLeft, setRefAreaLeft] = useState("");
@@ -123,6 +124,7 @@ const ChartComponent = ({ testings }) => {
         width="100%"
         height={isMobile ? 300 : 400}
         sx={{ mb: 2, p: 0 }}
+        id="chart-container"
       >
         <LineChart
           data={chartData}
@@ -221,6 +223,7 @@ const ChartComponent = ({ testings }) => {
             />
           )}
         </LineChart>
+
         {testings.length < 2 && (
           <FormControlLabel
             control={
@@ -249,6 +252,7 @@ const ChartComponent = ({ testings }) => {
             secondsToPace={secondsToPace}
           />
           <TestingAccordion testings={testings} />
+          <GeneratePDF testings={testings} athletes={athletes} />{" "}
         </span>
       </ResponsiveContainer>
       {testings && testings.length === 1 && (

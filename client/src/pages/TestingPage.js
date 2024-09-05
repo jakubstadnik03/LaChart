@@ -252,7 +252,7 @@ const TestingPage = ({
             ))}
           </div>
           <Paper elevation={3} sx={{ p: 2 }}>
-            <ChartComponent testings={selectedTestings} />
+            <ChartComponent testings={selectedTestings} athletes={athletes} />
             {selectedTestings.length === 1 && (
               <div>
                 <Paper elevation={3} sx={{ p: 2 }}>
